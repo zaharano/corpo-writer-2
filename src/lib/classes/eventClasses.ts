@@ -1,7 +1,31 @@
-import gameID from '$lib/settings'
+// export class EventList {
+//   events: Event[];
+
+//   constructor(events?: Event[]) {
+//     this.events = events || [];
+//   }
+
+//   getEvents(): Event[] {
+//     return this.events;
+//   }
+
+//   addEvent(event: Event): void {
+//     this.events = [...this.events, event];
+//   }
+
+//   removeEvent(id: ReturnType<typeof crypto.randomUUID>): void {
+//     this.events = this.events.filter((e) => e.id !== id);
+//   }
+
+//   editEvent(id: ReturnType<typeof crypto.randomUUID>, event: Event): void {
+//     this.events = this.events.map((e) => (e.id === id ? event : e));
+//   }
+// }
 
 export class Event {
+  id: ReturnType<typeof crypto.randomUUID>;
   meta: EventMeta;
+  writerMeta: EventWriterMeta;
   screens: {
     start: Screen;
     [index: string]: Screen;
@@ -11,9 +35,15 @@ export class Event {
     onEnd?: Effects;
   };
 
-  constructor() {
-    this.meta = new EventMeta();
+  constructor(title?: string, slug?: string) {
+    this.id = crypto.randomUUID();
+    this.meta = new EventMeta(title, slug);
     this.screens = { start: new Screen('start') };
+    this.writerMeta = new EventWriterMeta();
+    this.effects = {
+      onStart: new Effects(),
+      onEnd: new Effects()
+    };
   }
 }
 
@@ -26,14 +56,22 @@ export class EventMeta {
   rarity?: number;
   requires?: Requirements;
 
-  constructor() {
-    this.slug = '';
-    this.title = '';
+  constructor(title?: string, slug?: string) {
+    this.slug = slug || '';
+    this.title = title || '';
     this.repeatable = false;
     this.random = false;
     this.priority = 1;
     this.rarity = 1;
     this.requires = new Requirements();
+  }
+}
+
+class EventWriterMeta {
+  status: string;
+
+  constructor() {
+    this.status = 'draft';
   }
 }
 

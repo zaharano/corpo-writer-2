@@ -1,27 +1,29 @@
 <script lang='ts'>
   import Heading from "$lib/components/ui/typography/heading.svelte";
-  import * as Card from "$lib/components/ui/card/index";
   import {Button} from "$lib/components/ui/button/index";
+  import {onMount} from "svelte";
+  import settings from "$lib/settings";
+	import { Event } from "$lib/classes/eventClasses";
+  import { eventStore } from "$lib/stores/eventStore";
+	import EventTable from "$lib/components/eventDisplay/eventTable.svelte";
+	import NewEventDialog from "$lib/components/eventInputs/newEventDialog.svelte";
+  
+  const { gameID, gameTitle } = settings;
+
+  let events = eventStore;
+
+  onMount(() => {
+    const data = window.localStorage.getItem(gameID);
+    if (data) {
+      events.loadSavedEvents(JSON.parse(data));
+    }
+  });
+
 </script>
 
-<Card.Root class="w-[350px]">
-  <Card.Header>
-    <Card.Title>Create project</Card.Title>
-    <Card.Description>Deploy your new project in one-click.</Card.Description>
-  </Card.Header>
-  <Card.Content>
-    <form>
-      <div class="grid w-full items-center gap-4">
-        <div class="flex flex-col space-y-1.5">
-          Fucknuts
-        </div>
-      </div>
-    </form>
-  </Card.Content>
-  <Card.Footer class="flex justify-between">
-    <Button variant="outline">Cancel</Button>
-    <Button>Deploy</Button>
-  </Card.Footer>
-</Card.Root>
+<Heading level={1}>Let's write <em>{gameTitle}</em></Heading>
 
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<Button class='mx-auto' on:click={() => events.addEvent(new Event)}>Add an Event</Button>
+<NewEventDialog />
+
+<EventTable />
