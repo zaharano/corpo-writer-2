@@ -1,9 +1,11 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 import { Event } from "$lib/classes/eventClasses";
 import { browser } from "$app/environment"
 import settings from "$lib/settings";
+import { page } from "$app/stores";
 
 let init : Event[] = [];
+let initEvent : Event | undefined;
 
 if (browser) {
   const data = window.localStorage.getItem(settings.gameID);
@@ -13,12 +15,15 @@ if (browser) {
 }
 
 export let eventStore = createEventStore(init);
+export let currentEvent = createCurrentEventStore(initEvent);
 
+// Save any time the eventStore changes
 eventStore.subscribe((events) => {
   if (browser) {
     window.localStorage.setItem(settings.gameID, JSON.stringify(events));
   }
 });
+
 
 export function createEventStore(init : Event[] = []) {
   const { subscribe, update, set } = writable(init);
@@ -39,10 +44,19 @@ export function createEventStore(init : Event[] = []) {
     update(events => events.map((e) => (e.id === id ? event : e)));
   }
 
+  const getEventBySlug = (slug: string) => {
+    const events = get(eventStore);
+    return events.find((e) => e.meta.slug === slug);
+  }
+
   const allEventNames = () => {
-    return subscribe((events) => {
-      return events.map((e) => e.meta.title);
-    });
+    const events = get(eventStore);
+    return events.map((e) => e.meta.title);
+  }
+
+  const allEventSlugs = () => {
+    const events = get(eventStore);
+    return events.map((e) => e.meta.slug);
   }
 
   return {
@@ -51,6 +65,32 @@ export function createEventStore(init : Event[] = []) {
     removeEvent,
     editEvent,
     loadSavedEvents,
-    allEventNames
+    getEventBySlug,
+    allEventNames,
+    allEventSlugs
+  };
+}
+
+export function createCurrentEventStore(initEvent : Event | null = null) {
+  if (initEvent === null) {
+    initEvent = new Event();
+  }
+  const { subscribe, update, set } = writable(initEvent);
+
+  const save = () => {
+    const event = get(currentEvent);
+    eventStore.editEvent(event.id, event);
+  }
+
+  const load = (event: Event) => {
+    set(event);
+  }
+
+  return {
+    subscribe,
+    load,
+    save,
+    update,
+    set,
   };
 }

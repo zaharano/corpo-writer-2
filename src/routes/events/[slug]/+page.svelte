@@ -1,10 +1,18 @@
 <script lang='ts'>
-	export let data;
+	import Heading from "$lib/components/ui/typography/heading.svelte";
+	// import Meta from "$lib/components/eventInputs/meta.svelte";
+  import {Separator} from "$lib/components/ui/separator/index";
+  import MetaForm from "./meta-form.svelte";
 
-  if (data) {
-    console.log(data);
-  }
+  // import type { PageData } from "./$types.js";
+	// export let data: PageData;
 </script>
 
-<h1>Event Page</h1>
-<pre>{JSON.stringify(data, null, 2)}</pre>
+<div class="space-y-6">
+  <div>
+    <Heading level={3}>Meta</Heading>
+    <p class="text-sm text-muted-foreground">The event's metadata</p>
+  </div>
+  <Separator />
+  <MetaForm />
+</div>

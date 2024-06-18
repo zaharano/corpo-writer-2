@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { cn } from '$lib/utils';
   export let level = 1;
   export let as = 'h1';
+
+  export let className : string | undefined = undefined;
 
   function determineClass(level) {
     switch (level) {
@@ -36,19 +39,19 @@
 </script>
 
 {#if as === 'h2'}
-  <h2 class="{style}">
+  <h2 class="{cn(style, className)}">
     <slot />
   </h2>
 {:else if as === 'h3'}
-  <h3 class="{style}">
+  <h3 class="{cn(style, className)}">
     <slot />
   </h3>
 {:else if as === 'h4'}
-  <h4 class="{style}">
+  <h4 class="{cn(style, className)}">
     <slot />
   </h4>
 {:else}
-  <h1 class="{style}">
+  <h1 class="{cn(style, className)}">
     <slot />
   </h1>
 {/if}
