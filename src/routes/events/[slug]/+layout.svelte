@@ -33,18 +33,6 @@
 			title: "Screens",
 			href: `/events/${slug}/screens`,
 		},
-		// {
-		// 	title: "Appearance",
-		// 	href: "/examples/forms/appearance",
-		// },
-		// {
-		// 	title: "Notifications",
-		// 	href: "/examples/forms/notifications",
-		// },
-		// {
-		// 	title: "Display",
-		// 	href: "/examples/forms/display",
-		// },
 	];
 </script>
 
