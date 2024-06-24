@@ -2,7 +2,6 @@ import { writable, get } from "svelte/store";
 import { Event } from "$lib/classes/eventClasses";
 import { browser } from "$app/environment"
 import settings from "$lib/settings";
-import { page } from "$app/stores";
 
 let init : Event[] = [];
 let initEvent : Event | undefined;
@@ -14,8 +13,8 @@ if (browser) {
   }
 }
 
-export let eventStore = createEventStore(init);
-export let currentEvent = createCurrentEventStore(initEvent);
+export const eventStore = createEventStore(init);
+export const currentEvent = createCurrentEventStore(initEvent);
 
 // Save any time the eventStore changes
 eventStore.subscribe((events) => {
