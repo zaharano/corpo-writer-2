@@ -2,9 +2,17 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
   const gameRequirements = z.object({
-    maxLevel: z.coerce.number({invalid_type_error: "Must be a number"}).int().min(0, "Must be more than 0").max(100, "Must be less than 100").optional(),
-    minLevel: z.coerce.number({invalid_type_error: "Must be a number"}).int().min(0, "Must be more than 0").max(100, "Must be less than 100").optional(),
-  }).optional();
+    minLevel: z.coerce.number({invalid_type_error: "Must be a number"}).int().min(0, "Must be more than 0").max(100, "Must be less than 100").or(z.null()),
+    maxLevel: z.coerce.number({invalid_type_error: "Must be a number"}).int().min(0, "Must be more than 0").max(100, "Must be less than 100").or(z.null()),
+  }).superRefine((obj, ctx) => {
+    if (obj.minLevel && obj.maxLevel && obj.minLevel > obj.maxLevel) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Minimum level must be less than maximum level",
+        path: ["minLevel"],
+      });
+    }
+  })
 
   export const objWithGameRequirements = z.object({
     gameReqs: gameRequirements,
