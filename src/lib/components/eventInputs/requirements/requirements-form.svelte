@@ -16,7 +16,7 @@
 
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
-	import Heading from "../ui/typography/heading.svelte";
+	import Heading from "../../ui/typography/heading.svelte";
 	import GameRequirementsForm from "./game-requirements-form.svelte";
 
   export let form
