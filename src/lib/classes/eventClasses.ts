@@ -1,3 +1,6 @@
+// I think these could be written as extensions of types inferred from zod schemas
+// TODO: refactor to use zod schemas
+
 export class Event {
   readonly id: ReturnType<typeof crypto.randomUUID>;
   meta: EventMeta;
