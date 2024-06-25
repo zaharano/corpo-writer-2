@@ -119,11 +119,23 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     set(event);
   }
 
+  const allScreenTitles = () => {
+    const event = get(currentEvent);
+    return event.screens.map((s) => s.title);
+  }
+
+  const allScreenSlugs = () => {
+    const event = get(currentEvent);
+    return event.screens.map((s) => s.slug);
+  }
+
   return {
     subscribe,
     load,
     save,
     update,
     set,
+    allScreenTitles,
+    allScreenSlugs,
   };
 }
