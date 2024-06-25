@@ -63,6 +63,7 @@ export function createEventStore(init : Event[] = []) {
     return events.map((e) => e.meta.slug);
   }
 
+  // Flag set is determined from all flag setting events and options
   const allPossibleFlags = () => {
     const events = get(eventStore);
     const flags = new Set<string>();
@@ -77,13 +78,13 @@ export function createEventStore(init : Event[] = []) {
           flags.add(f);
         });
       }
-      for (const [, screen] of Object.entries(e.screens)) {
+      e.screens.forEach((screen) =>{
         screen.options.forEach((o) => {
           o?.effects?.addFlags?.forEach((f) => {
             flags.add(f);
           });
         });
-      }
+      });
     });
     return Array.from(flags);
   }
