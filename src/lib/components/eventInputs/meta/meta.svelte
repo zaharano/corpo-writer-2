@@ -1,8 +1,8 @@
 <script lang='ts'>
   import { currentEvent } from "$lib/stores/eventStore.js";
 	import { get } from "svelte/store";
-	import Heading from "../ui/typography/heading.svelte";
-	import Separator from "../ui/separator/separator.svelte";
+	import Heading from "../../ui/typography/heading.svelte";
+	import Separator from "../../ui/separator/separator.svelte";
 	import MetaForm from "./meta-form.svelte";
 
   let { title, slug, repeatable, random, priority, rarity, requires } = $currentEvent.meta;
