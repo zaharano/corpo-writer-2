@@ -1,14 +1,14 @@
 // I think these could be written as extensions of types inferred from zod schemas
 // TODO: refactor to use zod schemas
 
+export type ID = ReturnType<typeof crypto.randomUUID>;
+
 export class Event {
-  readonly id: ReturnType<typeof crypto.randomUUID>;
+  readonly id: ID;
   meta: EventMeta;
   writerMeta: WriterMeta;
-  screens: {
-    start: Screen;
-    [index: string]: Screen;
-  };
+  screens: Screen[];
+  readonly startScreen: ID;
   effects?: {
     onStart?: Effects;
     onEnd?: Effects;
@@ -16,8 +16,9 @@ export class Event {
 
   constructor(title: string, slug: string) {
     this.id = crypto.randomUUID();
+    this.startScreen = crypto.randomUUID();
     this.meta = new EventMeta(title, slug);
-    this.screens = { start: new Screen('start') };
+    this.screens = [new Screen('Start', 'start', this.startScreen)];
     this.writerMeta = new WriterMeta();
     this.effects = {
       onStart: new Effects(),
@@ -55,12 +56,17 @@ class WriterMeta {
 }
 
 class Screen {
+  readonly id: ID;
+  slug: string;
   title: string;
   text: string;
   options: Option[];
   writerMeta: WriterMeta;
 
-  constructor(title: string) {
+  constructor(title: string, slug: string, id: ID) {
+    if (id) this.id = id;
+    else this.id = crypto.randomUUID();
+    this.slug = slug;
     this.title = title;
     this.text = '';
     this.options = [new Option()];
