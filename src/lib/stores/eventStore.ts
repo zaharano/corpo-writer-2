@@ -48,6 +48,11 @@ export function createEventStore(init : Event[] = []) {
     return events.find((e) => e.meta.slug === slug);
   }
 
+  const getEventById = (id: ReturnType<typeof crypto.randomUUID>) => {
+    const events = get(eventStore);
+    return events.find((e) => e.id === id);
+  }
+
   const allEventNames = () => {
     const events = get(eventStore);
     return events.map((e) => e.meta.title);
@@ -62,8 +67,18 @@ export function createEventStore(init : Event[] = []) {
     const events = get(eventStore);
     const flags = new Set<string>();
     events.forEach((e) => {
-      for (const [k, v] of Object.entries(e.screens)) {
-        v.options.forEach((o) => {
+      if (e.effects?.onStart?.addFlags) {
+        e.effects.onStart.addFlags.forEach((f) => {
+          flags.add(f);
+        });
+      }
+      if (e.effects?.onEnd?.addFlags) {
+        e.effects.onEnd.addFlags.forEach((f) => {
+          flags.add(f);
+        });
+      }
+      for (const [, screen] of Object.entries(e.screens)) {
+        screen.options.forEach((o) => {
           o?.effects?.addFlags?.forEach((f) => {
             flags.add(f);
           });
@@ -80,6 +95,7 @@ export function createEventStore(init : Event[] = []) {
     editEvent,
     loadSavedEvents,
     getEventBySlug,
+    getEventById,
     allEventNames,
     allEventSlugs,
     allPossibleFlags,
@@ -100,8 +116,6 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
   const load = (event: Event) => {
     set(event);
   }
-
-
 
   return {
     subscribe,
