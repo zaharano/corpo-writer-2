@@ -103,8 +103,9 @@ export function createEventStore(init : Event[] = []) {
 }
 
 export function createCurrentEventStore(initEvent : Event | null = null) {
+  // not sure if this is necessary -
   if (initEvent === null) {
-    initEvent = new Event();
+    initEvent = new Event("New Event", "new-event");
   }
   const { subscribe, update, set } = writable(initEvent);
 
