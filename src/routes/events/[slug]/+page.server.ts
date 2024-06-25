@@ -1,7 +1,7 @@
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { type Actions, fail } from "@sveltejs/kit";
-import { metaFormSchema } from "$lib/components/eventInputs/meta-form.svelte";
+import { metaFormSchema } from "$lib/components/eventInputs/meta/meta-form.svelte";
 import type { PageServerLoad } from "./$types.js";
 
 export const load: PageServerLoad = async () => {
