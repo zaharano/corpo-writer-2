@@ -2,7 +2,7 @@
   import Heading from "$lib/components/ui/typography/heading.svelte";
   import settings from "$lib/settings";
 	import EventTable from "$lib/components/eventDisplay/eventTable.svelte";
-	import NewEventDialog from "$lib/components/eventInputs/newEventDialog.svelte";
+	import NewEventDialog from "$lib/components/eventInputs/event/newEventDialog.svelte";
 
   const { gameTitle } = settings;
 
