@@ -2,24 +2,18 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
   import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-form.svelte";
+  import { newEventSchema } from "$lib/components/eventInputs/event/newEventDialog.svelte";
 
-  export const metaFormSchema = objWithRequirements.extend({
-    title: z
-			.string()
-			.min(6, "Title must be at least 6 characters.")
-			.max(60, "Title must not be longer than 60 characters"),
-		slug: z
-      .string({ required_error: "Set a valid slug" })
-      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug can only be lowercase letters and numbers separated by hyphens")
-      .min(6, "Slug must be at least 6 characters")
-      .max(30, "Slug must not be longer than 30 characters"),
+  const partialSchema = objWithRequirements.merge(newEventSchema.innerType());
+  export const metaFormSchema = partialSchema.extend({
     repeatable: z.boolean(),
     random: z.boolean(),
     priority: z.number().int().min(0).max(100),
     rarity: z.number().int().min(0).max(100),
   })
 
-	export type MetaFormSchema = typeof metaFormSchema;
+  // vestigial?
+	// export type MetaFormSchema = typeof metaFormSchema;
 </script>
 
 <script lang='ts'>
@@ -48,12 +42,13 @@
 
 	const { form: formData, enhance } = form;
 
+  // TODO: Generalize this to use elsewhere autosave to currentEvent
   let saveTimer: ReturnType<typeof setTimeout>;
   function saveMeta() {
     clearTimeout(saveTimer);
     tick().then(() => {
       saveTimer = setTimeout(() => {
-        console.log(metaFormSchema.safeParse($formData))
+        // console.log(metaFormSchema.safeParse($formData))
         if (metaFormSchema.safeParse($formData).success) {
           let ce = $currentEvent;
           ce.meta = { ...ce.meta, ...$formData};
