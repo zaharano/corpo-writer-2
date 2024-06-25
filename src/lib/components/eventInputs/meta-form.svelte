@@ -12,27 +12,12 @@
       .string({ required_error: "Set a valid slug" })
       .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug can only be lowercase letters and numbers separated by hyphens")
       .min(6, "Slug must be at least 6 characters")
-      .max(60, "Slug must not be longer than 60 characters"),
+      .max(30, "Slug must not be longer than 30 characters"),
     repeatable: z.boolean(),
     random: z.boolean(),
     priority: z.number().int().min(0).max(100),
     rarity: z.number().int().min(0).max(100),
   })
-	// export const metaFormSchema = z.object({
-	// 	title: z
-	// 		.string()
-	// 		.min(6, "Title must be at least 6 characters.")
-	// 		.max(60, "Title must not be longer than 60 characters"),
-	// 	slug: z
-  //     .string({ required_error: "Set a valid slug" })
-  //     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug can only be lowercase letters and numbers separated by hyphens")
-  //     .min(6, "Slug must be at least 6 characters")
-  //     .max(60, "Slug must not be longer than 60 characters"),
-  //   repeatable: z.boolean(),
-  //   random: z.boolean(),
-  //   priority: z.number().int().min(0).max(100),
-  //   rarity: z.number().int().min(0).max(100),
-	// });
 
 	export type MetaFormSchema = typeof metaFormSchema;
 </script>
@@ -53,9 +38,6 @@
   import { currentEvent } from "$lib/stores/eventStore.js";
   import { valid } from "$lib/stores/uiStore";
 	import { tick } from "svelte";
-	import type { Event } from "$lib/classes/eventClasses";
-
-  // export let data: SuperValidated<Infer<MetaFormSchema>>;
 
   let current = $currentEvent.meta;
 
@@ -102,22 +84,22 @@
 
   function slugGen() {
     if ($formData.title && !$formData.slug) {
-      $formData.slug = $formData.title.toLowerCase().replace(/\s/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-{2,}/g,'-');
+      $formData.slug = $formData.title.toLowerCase().replace(/\s/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-{2,}/g,'-').slice(0, 30);
     }
   }
 
   function handleSlider() {
     tick().then(() => {
-      $formData.priority = aPriority ? aPriority[0] : undefined;
-      $formData.rarity = aRarity ? aRarity[0] : undefined;
+      $formData.priority = aPriority[0]
+      $formData.rarity = aRarity[0];
       saveMeta();
     });
   }
 
   // these workarounds because slider uses [number] and not number
   // also, now odd with the value being close but not the same -
-  let aPriority = $formData.priority ? [$formData.priority] : undefined;
-  let aRarity = $formData.rarity ? [$formData.rarity] : undefined;
+  let aPriority = [$formData.priority];
+  let aRarity = [$formData.rarity];
 </script>
 
 <form method="POST" class="mt-8 space-y-8" id="meta-form" use:enhance on:change={saveMeta}>
