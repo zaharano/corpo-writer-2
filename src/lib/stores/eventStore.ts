@@ -58,6 +58,21 @@ export function createEventStore(init : Event[] = []) {
     return events.map((e) => e.meta.slug);
   }
 
+  const allPossibleFlags = () => {
+    const events = get(eventStore);
+    const flags = new Set<string>();
+    events.forEach((e) => {
+      for (const [k, v] of Object.entries(e.screens)) {
+        v.options.forEach((o) => {
+          o?.effects?.addFlags?.forEach((f) => {
+            flags.add(f);
+          });
+        });
+      }
+    });
+    return Array.from(flags);
+  }
+
   return {
     subscribe,
     addEvent,
@@ -66,7 +81,8 @@ export function createEventStore(init : Event[] = []) {
     loadSavedEvents,
     getEventBySlug,
     allEventNames,
-    allEventSlugs
+    allEventSlugs,
+    allPossibleFlags,
   };
 }
 
@@ -84,6 +100,8 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
   const load = (event: Event) => {
     set(event);
   }
+
+
 
   return {
     subscribe,
