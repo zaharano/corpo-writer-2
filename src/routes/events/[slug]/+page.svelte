@@ -2,7 +2,7 @@
 	import Heading from "$lib/components/ui/typography/heading.svelte";
 	// import Meta from "$lib/components/eventInputs/meta.svelte";
   import {Separator} from "$lib/components/ui/separator/index";
-  import MetaForm from "./meta-form.svelte";
+  import MetaForm from "$lib/components/eventInputs/meta-form.svelte";
 
   // import type { PageData } from "./$types.js";
 	// export let data: PageData;
