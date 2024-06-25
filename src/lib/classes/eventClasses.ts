@@ -1,5 +1,5 @@
 export class Event {
-  id: ReturnType<typeof crypto.randomUUID>;
+  readonly id: ReturnType<typeof crypto.randomUUID>;
   meta: EventMeta;
   writerMeta: EventWriterMeta;
   screens: {
@@ -28,8 +28,8 @@ export class EventMeta {
   title: string;
   repeatable: boolean;
   random: boolean;
-  priority?: number;
-  rarity?: number;
+  priority: number;
+  rarity: number;
   requires?: Requirements;
 
   constructor(title?: string, slug?: string) {
@@ -37,7 +37,7 @@ export class EventMeta {
     this.title = title || '';
     this.repeatable = false;
     this.random = false;
-    this.priority = 1;
+    this.priority = 50;
     this.rarity = 1;
     this.requires = new Requirements();
   }
@@ -87,17 +87,20 @@ class Effects {
 }
 
 class EventChanges {
-  schedule?: {
-    add?: {
+  schedule: {
+    add: {
       event: string;
       time: number;
     }[];
-    remove?: string[];
+    remove: string[];
   };
-  lock?: string[];
-  unlock?: string[];
+  lock: string[];
+  unlock: string[];
 
-  constructor(schedule?: { add?: { event: string; time: number }[]; remove?: string[] }, lock?: string[], unlock?: string[]) {
+  constructor(schedule?: { add: { event: string; time: number }[]; remove: string[] }, lock: string[] = [], unlock: string[] = []) {
+    if (!schedule) schedule = { add: [], remove: [] };
+    if (!schedule.add) schedule.add = [];
+    if (!schedule.remove) schedule.remove = [];
     this.schedule = schedule;
     this.lock = lock;
     this.unlock = unlock;
@@ -105,8 +108,8 @@ class EventChanges {
 }
 
 class Requirements {
-  gameReqs?: GameRequirements;
-  flags?: FlagSet;
+  flags: FlagSet;
+  gameReqs: GameRequirements;
 
   constructor(gameReqs?: GameRequirements, flags?: FlagSet) {
     this.gameReqs = gameReqs || new GameRequirements();
@@ -115,10 +118,10 @@ class Requirements {
 }
 
 class GameRequirements {
-  maxLevel?: number;
-  minLevel?: number;
+  minLevel: number | null;
+  maxLevel: number | null;
 
-  constructor(maxLevel?: number, minLevel?: number) {
+  constructor(maxLevel: number | null = null , minLevel: number | null = null) {
     this.maxLevel = maxLevel;
     this.minLevel = minLevel;
   }
