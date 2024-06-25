@@ -38,7 +38,7 @@
 
 <div class="hidden space-y-6 p-10 pb-16 md:block">
 	<div class="space-y-0.5">
-		<h2 class="text-2xl font-bold tracking-tight">Editing <span>{ce?.meta.title}</span></h2>
+		<h2 class="text-2xl font-bold tracking-tight">Editing <span class="bg-muted text-muted-foreground rounded-sm px-2 py-1">{ce?.meta.title}</span></h2>
 		<p class="text-muted-foreground">
 			Changes are not automatically saved - make sure to save your changes before leaving.
 		</p>
