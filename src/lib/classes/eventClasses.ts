@@ -30,7 +30,7 @@ export class EventMeta {
   random: boolean;
   priority: number;
   rarity: number;
-  requires?: Requirements;
+  requires: Requirements;
 
   constructor(title?: string, slug?: string) {
     this.slug = slug || '';
@@ -67,21 +67,24 @@ class Option {
   text: string;
   next: string;
   requires?: Requirements;
-  effects?: Effects;
+  effects: Effects;
 
   constructor() {
     this.text = '';
     this.next = '';
     this.requires = new Requirements();
+    this.effects = new Effects();
   }
 }
 
 class Effects {
-  editFlags?: FlagSet;
-  editEvents?: EventChanges;
+  addFlags: string[];
+  removeFlags: string[];
+  editEvents: EventChanges;
 
   constructor() {
-    this.editFlags = new FlagSet();
+    this.addFlags = [];
+    this.removeFlags = [];
     this.editEvents = new EventChanges();
   }
 }
@@ -107,13 +110,13 @@ class EventChanges {
   }
 }
 
-class Requirements {
-  flags: FlagSet;
+export class Requirements {
+  flags: string[];
   gameReqs: GameRequirements;
 
-  constructor(gameReqs?: GameRequirements, flags?: FlagSet) {
+  constructor(gameReqs?: GameRequirements, flags?: string[]) {
     this.gameReqs = gameReqs || new GameRequirements();
-    this.flags = flags || new FlagSet();
+    this.flags = flags || [];
   }
 }
 
@@ -125,8 +128,4 @@ class GameRequirements {
     this.maxLevel = maxLevel;
     this.minLevel = minLevel;
   }
-}
-
-class FlagSet {
-  [index: string]: boolean;
 }
