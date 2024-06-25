@@ -20,3 +20,35 @@
 
   export type ObjWithGameRequirements = typeof objWithGameRequirements;
 </script>
+
+<script lang="ts">
+  import * as Form from "$lib/components/ui/form/index.js";
+  import {Input} from "$lib/components/ui/input/index.js";
+
+  export let form
+  export let context = "event";
+
+  const { form: formData } = form;
+</script>
+
+<Form.Field {form} name="requires.gameReqs.minLevel">
+  <Form.Control let:attrs>
+    <Form.Label>Min Level</Form.Label>
+    <Input type="number" {...attrs} bind:value={$formData.requires.gameReqs.minLevel}/>
+  </Form.Control>
+  <Form.Description>
+    Minimum player level required for this {context}.
+  </Form.Description>
+  <Form.FieldErrors />
+</Form.Field>
+
+<Form.Field {form} name="requires.gameReqs.maxLevel">
+  <Form.Control let:attrs>
+    <Form.Label>Max Level</Form.Label>
+    <Input type="number" {...attrs} bind:value={$formData.requires.gameReqs.maxLevel}/>
+  </Form.Control>
+  <Form.Description>
+    Maximum player level required for this {context}.
+  </Form.Description>
+  <Form.FieldErrors />
+</Form.Field>
