@@ -4,7 +4,7 @@
 export class Event {
   readonly id: ReturnType<typeof crypto.randomUUID>;
   meta: EventMeta;
-  writerMeta: EventWriterMeta;
+  writerMeta: WriterMeta;
   screens: {
     start: Screen;
     [index: string]: Screen;
@@ -14,11 +14,11 @@ export class Event {
     onEnd?: Effects;
   };
 
-  constructor(title?: string, slug?: string) {
+  constructor(title: string, slug: string) {
     this.id = crypto.randomUUID();
     this.meta = new EventMeta(title, slug);
     this.screens = { start: new Screen('start') };
-    this.writerMeta = new EventWriterMeta();
+    this.writerMeta = new WriterMeta();
     this.effects = {
       onStart: new Effects(),
       onEnd: new Effects()
@@ -46,7 +46,7 @@ export class EventMeta {
   }
 }
 
-class EventWriterMeta {
+class WriterMeta {
   status: string;
 
   constructor() {
@@ -58,11 +58,13 @@ class Screen {
   title: string;
   text: string;
   options: Option[];
+  writerMeta: WriterMeta;
 
   constructor(title: string) {
     this.title = title;
     this.text = '';
     this.options = [new Option()];
+    this.writerMeta = new WriterMeta();
   }
 }
 
