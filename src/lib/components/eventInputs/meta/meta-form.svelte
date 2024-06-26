@@ -2,7 +2,7 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
   import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-form.svelte";
-  import { newEventSchema } from "$lib/components/eventInputs/event/newEventDialog.svelte";
+  import { newEventSchema } from "$lib/types/formSchemas";
 
   const partialSchema = objWithRequirements.merge(newEventSchema.innerType());
   export const metaFormSchema = partialSchema.extend({
@@ -152,7 +152,7 @@
       />
     </Form.Control>
     <Form.Description>
-      Whether or not this event can be selected at random in the game when event is scheduled.
+      Whether or not this event can be selected at random in the game when no event is scheduled.
     </Form.Description>
     <Form.FieldErrors />
   </Form.Field>
