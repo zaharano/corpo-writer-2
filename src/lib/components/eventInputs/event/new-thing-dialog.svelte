@@ -19,8 +19,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  type NewThing = 'event' | 'screen';
-  export let purpose: NewThing;
+  export let purpose: 'event' | 'screen';
   let eventSlug = $page.params?.slug;
 
   const description = {
@@ -58,7 +57,7 @@
         }
         reset()
       } else if (purpose === 'screen') {
-        $currentEvent.addScreen($formData.title, $formData.slug);
+        currentEvent.addScreen($formData.title, $formData.slug);
         if (edit) {
           goto(`/events/${eventSlug}/screens/${$formData.slug}`);
         }
