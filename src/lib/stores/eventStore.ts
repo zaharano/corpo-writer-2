@@ -31,8 +31,8 @@ export function createEventStore(init : Event[] = []) {
     set(events);
   }
 
-  const addEvent = (event: Event) => {
-    update(events => [...events, event]);
+  const addEvent = (title: string, slug: string) => {
+    update(events => [...events, new Event(title, slug)]);
   }
 
   const removeEvent = (id: ReturnType<typeof crypto.randomUUID>) => {
