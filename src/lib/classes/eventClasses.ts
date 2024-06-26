@@ -18,6 +18,10 @@ export class Event {
     this.screens =  [...this.screens, new Screen(title, slug)];
   }
 
+  public editScreen(id: ID, screen: Screen) {
+    this.screens = this.screens.map(s => s.id === id ? screen : s);
+  }
+
   constructor(title: string, slug: string) {
     this.id = crypto.randomUUID();
     this.startScreen = crypto.randomUUID();
@@ -66,6 +70,10 @@ class Screen {
   text: string;
   options: Option[];
   writerMeta: WriterMeta;
+
+  // changeStatus(status: 'draft' | 'published' | 'archived') {
+  //   this.writerMeta.status = status;
+  // }
 
   constructor(title: string, slug: string, id?: ID) {
     if (id) this.id = id;
