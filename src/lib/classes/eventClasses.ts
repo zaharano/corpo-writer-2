@@ -14,6 +14,10 @@ export class Event {
     onEnd?: Effects;
   };
 
+  public addScreen(title: string, slug: string) {
+    this.screens =  [...this.screens, new Screen(title, slug)];
+  }
+
   constructor(title: string, slug: string) {
     this.id = crypto.randomUUID();
     this.startScreen = crypto.randomUUID();
@@ -48,7 +52,7 @@ export class EventMeta {
 }
 
 class WriterMeta {
-  status: string;
+  status: 'draft' | 'published' | 'archived';
 
   constructor() {
     this.status = 'draft';
@@ -63,7 +67,7 @@ class Screen {
   options: Option[];
   writerMeta: WriterMeta;
 
-  constructor(title: string, slug: string, id: ID) {
+  constructor(title: string, slug: string, id?: ID) {
     if (id) this.id = id;
     else this.id = crypto.randomUUID();
     this.slug = slug;
