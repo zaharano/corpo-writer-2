@@ -14,14 +14,6 @@ export class Event {
     onEnd?: Effects;
   };
 
-  public addScreen(title: string, slug: string) {
-    this.screens =  [...this.screens, new Screen(title, slug)];
-  }
-
-  public editScreen(id: ID, screen: Screen) {
-    this.screens = this.screens.map(s => s.id === id ? screen : s);
-  }
-
   constructor(title: string, slug: string) {
     this.id = crypto.randomUUID();
     this.startScreen = crypto.randomUUID();
@@ -63,10 +55,10 @@ class WriterMeta {
   }
 }
 
-class Screen {
+export class Screen {
   readonly id: ID;
-  slug: string;
   title: string;
+  slug: string;
   text: string;
   options: Option[];
   writerMeta: WriterMeta;

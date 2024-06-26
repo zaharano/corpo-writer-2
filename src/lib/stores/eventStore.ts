@@ -1,5 +1,6 @@
 import { writable, get } from "svelte/store";
-import { Event } from "$lib/classes/eventClasses";
+import { Event, Screen } from "$lib/classes/eventClasses";
+import type { ID } from "$lib/classes/eventClasses";
 import { browser } from "$app/environment"
 import settings from "$lib/settings";
 
@@ -13,6 +14,9 @@ if (browser) {
   }
 }
 
+// confirm: runs once?
+// Decide - loading from store means new Event(event) for each, or just the data?
+// methods on Event class requires the former. 
 export const eventStore = createEventStore(init);
 export const currentEvent = createCurrentEventStore(initEvent);
 
@@ -35,11 +39,11 @@ export function createEventStore(init : Event[] = []) {
     update(events => [...events, new Event(title, slug)]);
   }
 
-  const removeEvent = (id: ReturnType<typeof crypto.randomUUID>) => {
+  const removeEvent = (id: ID) => {
     update(events => events.filter((e) => e.id !== id));
   }
 
-  const editEvent = (id: ReturnType<typeof crypto.randomUUID>, event: Event) => {
+  const editEvent = (id: ID, event: Event) => {
     update(events => events.map((e) => (e.id === id ? event : e)));
   }
 
@@ -48,7 +52,7 @@ export function createEventStore(init : Event[] = []) {
     return events.find((e) => e.meta.slug === slug);
   }
 
-  const getEventById = (id: ReturnType<typeof crypto.randomUUID>) => {
+  const getEventById = (id: ID) => {
     const events = get(eventStore);
     return events.find((e) => e.id === id);
   }
@@ -119,6 +123,32 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     set(event);
   }
 
+  const addScreen = (title: string, slug: string) => {
+    update((e) => {
+      e.screens = [...e.screens, new Screen(title, slug)];
+      console.log(e)
+      return e;
+    })
+  }
+
+  const removeScreen = (id: ID) => {
+    update((e) => {
+      if (e.startScreen === id) {
+        // message - can't delete start screen
+        return e;
+      }
+      e.screens = e.screens.filter((s) => s.id !== id);
+      return e;
+    })
+  }
+
+  const editScreen = (id: ID, screen: Screen) => {
+    update((e) => {
+      e.screens = e.screens.map((s) => (s.id === id ? screen : s));
+      return e;
+    })
+  }
+
   const allScreenTitles = () => {
     const event = get(currentEvent);
     return event.screens.map((s) => s.title);
@@ -135,6 +165,9 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     save,
     update,
     set,
+    addScreen,
+    removeScreen,
+    editScreen,
     allScreenTitles,
     allScreenSlugs,
   };
