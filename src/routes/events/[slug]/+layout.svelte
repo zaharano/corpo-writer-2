@@ -6,6 +6,7 @@
   import { valid } from "$lib/stores/uiStore";
 	import { goto } from "$app/navigation";
 	import { Button } from "$lib/components/ui/button/index";
+	import DeleteDialog from "$lib/components/eventInputs/event/delete-dialog.svelte";
 
   const { slug } = $page.params;
 
@@ -55,6 +56,10 @@
           {/if}
         </div>
         <Button class="w-full" variant="secondary" on:click={() => goto("/")}>Back (without save)</Button>
+				<DeleteDialog class="w-full" handleDelete={() => {
+					eventStore.removeEvent($currentEvent.id);
+					goto("/");
+				}} />
       </div>
 		</aside>
 		<div class="flex-1 lg:max-w-2xl">

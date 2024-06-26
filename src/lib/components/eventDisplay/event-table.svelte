@@ -1,13 +1,11 @@
 <script lang="ts">
   import * as Table from "$lib/components/ui/table/index.js";
-  import StatusBadge from "$lib/components/eventDisplay/statusBadge.svelte";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Check } from "lucide-svelte";
-  import * as Popover from "$lib/components/ui/popover";
-  import * as Select from "$lib/components/ui/select";
-  import * as AlertDialog from "$lib/components/ui/alert-dialog";
+  import StatusPopover from "../eventInputs/meta/status-popover.svelte";
 
   import { eventStore } from "$lib/stores/eventStore";
+	import DeleteDialog from "../eventInputs/event/delete-dialog.svelte";
 
   const statuses = [
     { value: 'draft', label: 'Draft' },
@@ -31,38 +29,14 @@
       <Table.Row>
         <Table.Cell class="font-medium">{event.meta.title}</Table.Cell>
         <Table.Cell>
-          <Popover.Root>
-            <Popover.Trigger>
-              <StatusBadge className="mx-auto" status={event.writerMeta.status} />
-            </Popover.Trigger >
-            <Popover.Content class='w-44'>
-              <Select.Root
-                onSelectedChange={() => {
-                  eventStore.editEvent(event.id, {
-                    ...event,
-                    writerMeta: {
-                      status: event.writerMeta.status,
-                    }
-                  });
-                }}
-              >
-                <Select.Trigger class="w-full">
-                  <Select.Value placeholder="Select status" />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Group>
-                    <Select.Label>Status</Select.Label>
-                    {#each statuses as status}
-                      <Select.Item value={status.label} label={status.label}
-                        >{status.label}</Select.Item
-                      >
-                    {/each}
-                  </Select.Group>
-                </Select.Content>
-                <Select.Input name="status" />
-              </Select.Root>
-            </Popover.Content>
-          </Popover.Root>
+          <StatusPopover status={event.writerMeta.status} handleChange={(status) => {
+            eventStore.editEvent(event.id, {
+              ...event,
+              writerMeta: {
+                status,
+              }
+            });
+          }} />
         </Table.Cell>
         <Table.Cell class="text-center">
           {#if !event.meta.random}
@@ -76,21 +50,9 @@
             <Button>Edit</Button>
           </a>
 
-          <AlertDialog.Root>
-            <AlertDialog.Trigger><Button variant="destructive">Delete</Button></AlertDialog.Trigger>
-            <AlertDialog.Content>
-              <AlertDialog.Header>
-                <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
-                <AlertDialog.Description>
-                  This action cannot be undone. This will permanently delete this event and all of its contents.
-                </AlertDialog.Description>
-              </AlertDialog.Header>
-              <AlertDialog.Footer>
-                <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-                <AlertDialog.Action><Button on:click={() => eventStore.removeEvent(event.id)}>Delete</Button></AlertDialog.Action>
-              </AlertDialog.Footer>
-            </AlertDialog.Content>
-          </AlertDialog.Root>
+          <DeleteDialog handleDelete={() => {
+            eventStore.removeEvent(event.id);
+          }} />
 
         </Table.Cell>
       </Table.Row>
