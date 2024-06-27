@@ -1,7 +1,7 @@
 <script lang='ts'>
 	import Heading from "$lib/components/ui/typography/heading.svelte";
   import {Separator} from "$lib/components/ui/separator/index";
-  import ScreenTable from "$lib/components/eventDisplay/screen-table.svelte";
+  import ScreenTable from "$lib/components/eventInputs/screen/screen-table.svelte";
 	import NewThingDialog from "$lib/components/eventInputs/event/new-thing-dialog.svelte";
 </script>
 
@@ -12,5 +12,5 @@
   </div>
   <Separator />
   <ScreenTable />
-  <NewThingDialog purpose="screen" />
+  <NewThingDialog purpose="screen" variant="secondary"/>
 </div>

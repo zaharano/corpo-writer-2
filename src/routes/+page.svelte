@@ -8,10 +8,12 @@
 
 </script>
 
-<Heading className="mt-10 text-center" level={1}>Let's write <em>{gameTitle}</em></Heading>
-
-<div class="my-4 w-full flex items-center justify-center">
-  <NewThingDialog purpose="event" />
-</div>
+<Heading className="my-10 text-center" level={1}>Let's write <em>{gameTitle}</em></Heading>
 
 <EventTable />
+
+<div class="w-full flex items-center justify-center">
+  <div class="w-1/2">
+    <NewThingDialog purpose="event" />
+  </div>
+</div>
