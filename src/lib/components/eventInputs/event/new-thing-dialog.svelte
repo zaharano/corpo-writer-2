@@ -19,16 +19,21 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  export let purpose: 'event' | 'screen';
+  export let purpose: 'event' | 'screen' | 'stubEvent' | 'stubScreen'
+  export let variant: 'default' | 'secondary' = 'default';
   let eventSlug = $page.params?.slug;
 
   const description = {
     event: 'Add a new event to the game. A title is required to get started.',
     screen: 'Add a new screen to this event.',
+    stubEvent: 'Add a new event to the game. This stub event will be available to flesh out later - for now just enter a title and slug to point to.',
+    stubScreen: 'Add a new screen to the current event. This stub screen will be available to flesh out later - for now just enter a title and slug to point to.',
   }[purpose];
   const schema = {
     event: newEventSchema,
     screen: newScreenSchema,
+    stubEvent: newEventSchema,
+    stubScreen: newScreenSchema,
   }[purpose];
 
   const form = superForm( { title: '', slug: '' }, {
@@ -50,13 +55,13 @@
     } else {
       message = '';
       dialogOpen = false;
-      if (purpose === 'event') {
+      if (purpose === 'event' || purpose === 'stubEvent') {
         eventStore.addEvent($formData.title, $formData.slug);
         if (edit) {
           goto(`/events/${$formData.slug}`);
         }
         reset()
-      } else if (purpose === 'screen') {
+      } else if (purpose === 'screen' || purpose === 'stubScreen') {
         currentEvent.addScreen($formData.title, $formData.slug);
         if (edit) {
           goto(`/events/${eventSlug}/screens/${$formData.slug}`);
@@ -81,7 +86,7 @@
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
-  <Dialog.Trigger class={cn('w-40', buttonVariants({ variant: "default" }))}
+  <Dialog.Trigger class={cn('w-full', buttonVariants({ variant: "outline" }))}
     >New {capitalize(purpose)}</Dialog.Trigger
   >
   <Dialog.Content class="sm:max-w-[425px]">
@@ -133,7 +138,9 @@
       <Button type="button" class={buttonVariants({ variant: "secondary" })} on:click={() => handleSave(false)}>
         Save and close
       </Button>
-      <Button type="submit" on:click={() => handleSave(true)}>Save and edit</Button>
+      {#if purpose === 'event' || purpose === 'screen'}
+        <Button type="submit" on:click={() => handleSave(true)}>Save and edit</Button>
+      {/if}
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
