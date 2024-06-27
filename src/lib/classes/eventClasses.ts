@@ -79,12 +79,14 @@ export class Screen {
 }
 
 export class Option {
+  id: ID;
   text: string;
   next: string;
   requires?: Requirements;
   effects: Effects;
 
   constructor() {
+    this.id = crypto.randomUUID();
     this.text = '';
     this.next = '';
     this.requires = new Requirements();
