@@ -3,23 +3,19 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import { Check } from "lucide-svelte";
   import StatusPopover from "../eventInputs/meta/status-popover.svelte";
+  import StatusBadge from "$lib/components/eventDisplay/status-badge.svelte";
+
 
   import { eventStore } from "$lib/stores/eventStore";
 	import DeleteDialog from "../eventInputs/event/delete-dialog.svelte";
-
-  const statuses = [
-    { value: 'draft', label: 'Draft' },
-    { value: 'published', label: 'Published' },
-    { value: 'archived', label: 'Archived' },
-  ];
 </script>
 
 <Table.Root>
-  <Table.Caption>{$eventStore.length > 0 ? 'A table of events' : 'No events yet'}</Table.Caption>
+  <Table.Caption>{$eventStore.length > 0 ? '' : 'No events yet'}</Table.Caption>
   <Table.Header>
     <Table.Row>
       <Table.Head class="w-1/2">Title</Table.Head>
-      <Table.Head class="w-[70px] text-center">Status</Table.Head>
+      <Table.Head class="w-[100px] text-center">Status</Table.Head>
       <Table.Head class="w-[70px] text-center">Random</Table.Head>
       <Table.Head class="text-right">Screen #</Table.Head>
     </Table.Row>
@@ -29,7 +25,7 @@
       <Table.Row>
         <Table.Cell class="font-medium">{event.meta.title}</Table.Cell>
         <Table.Cell>
-          <StatusPopover status={event.writerMeta.status} handleChange={(status) => {
+          <StatusBadge status={event.writerMeta.status} handleChange={(status) => {
             eventStore.editEvent(event.id, {
               ...event,
               writerMeta: {

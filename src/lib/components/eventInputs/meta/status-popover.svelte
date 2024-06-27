@@ -1,7 +1,6 @@
 <script lang="ts">
   import * as Popover from "$lib/components/ui/popover";
   import * as Select from "$lib/components/ui/select";
-  import StatusBadge from "$lib/components/eventDisplay/statusBadge.svelte";
 
   export let status : 'draft' | 'published' | 'archived';
   export let handleChange: (status: 'draft' | 'published' | 'archived') => void;
@@ -10,17 +9,16 @@
 </script>
 
 <Popover.Root>
-  <Popover.Trigger>
-    <StatusBadge className="mx-auto" status={status} />
+  <Popover.Trigger class='w-full'>
   </Popover.Trigger >
   <Popover.Content class='w-44'>
-    <Select.Root onSelectedChange={(v) => {
+    <Select.Root open={true} onSelectedChange={(v) => {
       // @ts-ignore Not worth fixing
       v && (status = v.value);
       handleChange(status);
     }}>
       <Select.Trigger class="w-full">
-        <Select.Value placeholder={status} />
+        <!-- <Select.Value placeholder={status} /> -->
       </Select.Trigger>
       <Select.Content>
         {#each statuses as s}
