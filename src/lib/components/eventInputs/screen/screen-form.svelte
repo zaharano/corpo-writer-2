@@ -3,7 +3,7 @@
 	import { z } from "zod";
 
   import { newScreenSchema } from "$lib/types/formSchemas";
-  import { optionFormSchema } from "$lib/components/eventInputs/screen/option-form.svelte";
+  import { optionFormSchema } from "$lib/components/eventInputs/options/option-form.svelte";
 
   export const screenFormSchema = newScreenSchema.innerType().extend({
     text: z.string().min(4).max(600, "Keep screen text below 600 characters."),
@@ -28,7 +28,8 @@
 	import type { Screen } from "$lib/classes/eventClasses";
 	import Textarea from "$lib/components/ui/textarea/textarea.svelte";
 
-  import OptionForm from "$lib/components/eventInputs/screen/option-form.svelte"
+  import OptionForm from "$lib/components/eventInputs/options/option-form.svelte"
+	import OptionTable from "$lib/components/eventInputs/options/option-table.svelte";
 
   export let screen: Screen;
 
@@ -51,6 +52,11 @@
     });
   }
 
+  $: debugData = {
+    ...$formData,
+    options: `${$formData.options.length} option(s)`,
+  }
+
 </script>
 
 <form method="POST" class="mt-8 space-y-8" id="screen-form" use:enhance on:change={() => {}}>
@@ -60,7 +66,7 @@
 			<Input placeholder="A Shortcut to Mushrooms" {...attrs} bind:value={$formData.title} />
 		</Form.Control>
 		<Form.Description>
-			The title for this event.
+			The title for this screen. 
 		</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
@@ -77,7 +83,7 @@
       />
     </Form.Control>
     <Form.Description>
-      A unique identifier for this event. Must be unique and contain only lowercase letters, numbers, and hyphens.
+      A unique identifier for this screen. Must be unique and contain only lowercase letters, numbers, and hyphens.
     </Form.Description>
     <Form.FieldErrors />
   </Form.Field>
@@ -92,10 +98,10 @@
     </Form.Description>
     <Form.FieldErrors />
   </Form.Field>
-
-  <OptionForm />
+  
+  <OptionTable options={$formData.options} />
 </form>
 
 {#if browser}
-	<SuperDebug data={$formData} />
+	<SuperDebug data={debugData} />
 {/if}
