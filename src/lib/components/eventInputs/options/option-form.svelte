@@ -3,7 +3,7 @@
 	import { z } from "zod";
 
   import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-form.svelte";
-  import { effectsFormSchema } from "../effects/effects-form.svelte";
+  import { effectsFormSchema } from "$lib/components/eventInputs/effects/effects-form.svelte";
 
   export const optionFormSchema = objWithRequirements.extend({
     text: z.string().min(4).max(400),
@@ -20,9 +20,11 @@
   import { Separator } from "$lib/components/ui/separator/index";
   import { Switch } from "$lib/components/ui/switch/index.js";
   import { Option } from "$lib/classes/eventClasses";
-	import ScreenComboBox from "./screenComboBox.svelte";
+	import ScreenComboBox from "../screen/screenComboBox.svelte";
 
-  let option = new Option();
+  export let option: Option;
+
+  let effects = false;
 
   const form = superForm( { ...option }, {
     dataType: 'json',
@@ -33,33 +35,32 @@
 
 </script>
 
-<form method="POST" class="" id="option-form" use:enhance on:change={() => {}}>
+<form method="POST" class="space-y-4" id="option-form" use:enhance on:change={() => {}}>
   <Form.Field {form} name="text">
     <Form.Control let:attrs>
       <Form.Label>Text</Form.Label>
       <Input placeholder="You find a shiny rock." {...attrs} bind:value={$formData.text} />
     </Form.Control>
     <Form.Description>
-      Describe the option.
+      The text the user will be selecting.
     </Form.Description>
   </Form.Field>
 
+  <!-- TODO: bind to what I need -->
   <Form.Field {form} name="next">
     <Form.Control let:attrs>
-      <Form.Label>Next Screen</Form.Label>
-      <Input placeholder="rock" {...attrs} bind:value={$formData.next} />
+      <Form.Label>Next Screen</Form.Label><br>
+      <ScreenComboBox />
     </Form.Control>
     <Form.Description>
-      Slug of the next screen.
+      Select the screen this option leads to.
     </Form.Description>
   </Form.Field>
-
-  <ScreenComboBox />
 
   <Form.Field {form} name="effects">
     <Form.Control let:attrs>
       <Form.Label>Effects</Form.Label>
-      <Switch {...attrs} bind:checked={$formData.effects} />
+      <Switch {...attrs} bind:checked={effects} />
     </Form.Control>
     <Form.Description>
       Does this option have effects?
