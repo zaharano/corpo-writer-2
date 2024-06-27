@@ -81,9 +81,9 @@ export class Screen {
 export class Option {
   id: ID;
   text: string;
-  next: string;
+  next: ID | 'endEvent' | 'endGame' | '';
   requires?: Requirements;
-  effects: Effects;
+  effects?: Effects;
 
   constructor() {
     this.id = crypto.randomUUID();
