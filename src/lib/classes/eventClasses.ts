@@ -78,7 +78,7 @@ export class Screen {
   }
 }
 
-class Option {
+export class Option {
   text: string;
   next: string;
   requires?: Requirements;
@@ -96,11 +96,13 @@ class Effects {
   addFlags: string[];
   removeFlags: string[];
   editEvents: EventChanges;
+  gameEffects: GameEffects;
 
   constructor() {
     this.addFlags = [];
     this.removeFlags = [];
     this.editEvents = new EventChanges();
+    this.gameEffects = new GameEffects();
   }
 }
 
@@ -143,4 +145,23 @@ class GameRequirements {
     this.maxLevel = maxLevel;
     this.minLevel = minLevel;
   }
+}
+
+class GameEffects {
+  performance?: number;
+  time?: number;
+  newEnemy?: string | 'auto';
+  newDepartment?: string | 'auto';
+  promotion?: string | 'auto';
+  demotion?: string | 'auto';
+  VFX?: GameVFX;
+}
+
+class GameVFX {
+  typeSpeed?: number;
+  tracker?: boolean;
+  enhancedTracker?: boolean;
+  flicker?: boolean;
+  corruption?: boolean;
+  ghost?: boolean;
 }
