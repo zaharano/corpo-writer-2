@@ -25,11 +25,49 @@ eventStore.subscribe((events) => {
   if (browser) {
     window.localStorage.setItem(settings.gameID, JSON.stringify(events));
   }
+  eventStore.updateLists();
 });
 
 
 export function createEventStore(init : Event[] = []) {
   const { subscribe, update, set } = writable(init);
+
+  // Storing these when store changes in case performance is an issue
+  // didn't want to think about putting list access method in a hot path
+  let _allSimplifiedEvents = new Set<{id: ID, title: string}>();
+  let _allEventTitles = new Set<string>();
+  let _allSlugs = new Set<string>();
+  let _allFlags = new Set<string>();
+
+  const updateLists = () => {
+    _allSimplifiedEvents = new Set<{id: ID, title: string}>();
+    _allEventTitles = new Set<string>();
+    _allSlugs = new Set<string>();
+    _allFlags = new Set<string>();
+    const events = get(eventStore);
+    events.forEach((e) => {
+      _allSimplifiedEvents.add({id: e.id, title: e.meta.title});
+      _allEventTitles.add(e.meta.title);
+      _allSlugs.add(e.meta.slug);
+      if (e.effects?.onStart?.addFlags) {
+        e.effects.onStart.addFlags.forEach((f) => {
+          _allFlags.add(f);
+        });
+      }
+      if (e.effects?.onEnd?.addFlags) {
+        e.effects.onEnd.addFlags.forEach((f) => {
+          _allFlags.add(f);
+        });
+      }
+      e.screens.forEach((screen) =>{
+        screen.options.forEach((o) => {
+          o?.effects?.addFlags?.forEach((f) => {
+            _allFlags.add(f);
+          });
+        });
+      });
+    });
+  }
 
   const loadSavedEvents = (events : Event[]) => {
     set(events);
@@ -57,40 +95,49 @@ export function createEventStore(init : Event[] = []) {
     return events.find((e) => e.id === id);
   }
 
+  const allSimplifiedEvents = () => {
+    // const events = get(eventStore);
+    // return events.map((e) => ({id: e.id, name: e.meta.title}));
+    return Array.from(_allSimplifiedEvents);
+  }
+
   const allEventNames = () => {
-    const events = get(eventStore);
-    return events.map((e) => e.meta.title);
+    // const events = get(eventStore);
+    // return events.map((e) => e.meta.title);
+    return Array.from(_allEventTitles);
   }
 
   const allEventSlugs = () => {
-    const events = get(eventStore);
-    return events.map((e) => e.meta.slug);
+    // const events = get(eventStore);
+    // return events.map((e) => e.meta.slug);
+    return Array.from(_allSlugs);
   }
 
   // Flag set is determined from all flag setting events and options
   const allPossibleFlags = () => {
-    const events = get(eventStore);
-    const flags = new Set<string>();
-    events.forEach((e) => {
-      if (e.effects?.onStart?.addFlags) {
-        e.effects.onStart.addFlags.forEach((f) => {
-          flags.add(f);
-        });
-      }
-      if (e.effects?.onEnd?.addFlags) {
-        e.effects.onEnd.addFlags.forEach((f) => {
-          flags.add(f);
-        });
-      }
-      e.screens.forEach((screen) =>{
-        screen.options.forEach((o) => {
-          o?.effects?.addFlags?.forEach((f) => {
-            flags.add(f);
-          });
-        });
-      });
-    });
-    return Array.from(flags);
+    // const events = get(eventStore);
+    // const flags = new Set<string>();
+    // events.forEach((e) => {
+    //   if (e.effects?.onStart?.addFlags) {
+    //     e.effects.onStart.addFlags.forEach((f) => {
+    //       flags.add(f);
+    //     });
+    //   }
+    //   if (e.effects?.onEnd?.addFlags) {
+    //     e.effects.onEnd.addFlags.forEach((f) => {
+    //       flags.add(f);
+    //     });
+    //   }
+    //   e.screens.forEach((screen) =>{
+    //     screen.options.forEach((o) => {
+    //       o?.effects?.addFlags?.forEach((f) => {
+    //         flags.add(f);
+    //       });
+    //     });
+    //   });
+    // });
+    // return Array.from(flags);
+    return Array.from(_allFlags);
   }
 
   return {
@@ -104,6 +151,8 @@ export function createEventStore(init : Event[] = []) {
     allEventNames,
     allEventSlugs,
     allPossibleFlags,
+    allSimplifiedEvents,
+    updateLists,
   };
 }
 
@@ -113,6 +162,22 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     initEvent = new Event("New Event", "new-event");
   }
   const { subscribe, update, set } = writable(initEvent);
+
+  // let _allSimplifiedScreens = new Set<{id: ID, title: string}>();
+  // let _allScreenTitles = new Set<string>();
+  // let _allSlugs = new Set<string>();
+
+  // const updateLists = () => {
+  //   _allSimplifiedScreens = new Set<{id: ID, title: string}>();
+  //   _allScreenTitles = new Set<string>();
+  //   _allSlugs = new Set<string>();
+  //   const event = get(currentEvent);
+  //   event.screens.forEach((s) => {
+  //     _allSimplifiedScreens.add({id: s.id, title: s.title});
+  //     _allScreenTitles.add(s.title);
+  //     _allSlugs.add(s.slug);
+  //   });
+  // }
 
   const save = () => {
     const event = get(currentEvent);
@@ -149,6 +214,11 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     })
   }
 
+  const allSimplifiedScreens = () => {
+    const event = get(currentEvent);
+    return event.screens.map((s) => ({id: s.id, name: s.title}));
+  }
+
   const allScreenTitles = () => {
     const event = get(currentEvent);
     return event.screens.map((s) => s.title);
@@ -168,6 +238,7 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     addScreen,
     removeScreen,
     editScreen,
+    allSimplifiedScreens,
     allScreenTitles,
     allScreenSlugs,
   };
