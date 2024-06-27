@@ -8,8 +8,12 @@
   import { tick } from "svelte";
 
   import { currentEvent } from "$lib/stores/eventStore";
+	import NewThingDialog from "../event/new-thing-dialog.svelte";
  
-  const screens = currentEvent.allSimplifiedScreens();
+  let screens = currentEvent.allSimplifiedScreens();
+  currentEvent.subscribe((_) => {
+    screens = currentEvent.allSimplifiedScreens();
+  });
  
   let open = false;
   let value = "";
@@ -36,13 +40,13 @@
       variant="outline"
       role="combobox"
       aria-expanded={open}
-      class="w-[200px] justify-between"
+      class="w-full justify-between"
     >
       {selectedValue}
       <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
     </Button>
   </Popover.Trigger>
-  <Popover.Content class="w-[200px] p-0">
+  <Popover.Content class="w-full p-0">
     <Command.Root>
       <Command.Input placeholder="Search screens..." />
       <Command.Empty>Create screen stub</Command.Empty>
@@ -64,6 +68,9 @@
             {screen.name}
           </Command.Item>
         {/each}
+      </Command.Group>
+      <Command.Group>
+        <NewThingDialog purpose='stubScreen' />
       </Command.Group>
     </Command.Root>
   </Popover.Content>
