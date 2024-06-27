@@ -13,10 +13,15 @@
   if (!screen) {
     goto(`/events/${slug}`);
   }
+
+  if (screen === undefined) {
+    throw new Error("Screen is undefined.");
+  }
 </script>
 
 <div class="space-y-6">
   <div>
+    
     <Heading level={3}>{screen.title}</Heading>
     <p class="text-sm text-muted-foreground">Edit this screen</p>
   </div>
