@@ -2,7 +2,7 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
 
-  import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-form.svelte";
+  import RequirementsForm, { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-form.svelte";
   import { effectsFormSchema } from "$lib/components/eventInputs/effects/effects-form.svelte";
 
   export const optionFormSchema = objWithRequirements.extend({
@@ -21,10 +21,15 @@
   import { Switch } from "$lib/components/ui/switch/index.js";
   import { Option } from "$lib/classes/eventClasses";
 	import ScreenComboBox from "../screen/screenComboBox.svelte";
+	import EffectsForm from "../effects/effects-form.svelte";
+	import { Label } from "$lib/components/ui/label";
+	import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
 
   export let option: Option;
+  export let handleSave: () => void;
 
   let effects = false;
+  let events = false;
 
   const form = superForm( { ...option }, {
     dataType: 'json',
@@ -57,15 +62,28 @@
     </Form.Description>
   </Form.Field>
 
-  <Form.Field {form} name="effects">
-    <Form.Control let:attrs>
-      <Form.Label>Effects</Form.Label>
-      <Switch {...attrs} bind:checked={effects} />
-    </Form.Control>
-    <Form.Description>
-      Does this option have effects?
-    </Form.Description>
-  </Form.Field>
-</form>
+  <ToggleSection>
+    <span slot='label'>Requirements</span>
+    <span slot='description'>Does this option have requirements? Flags or other game state.</span>
+    <RequirementsForm slot='toggled' {form}/>
+  </ToggleSection>
 
-  <Separator />
+  <ToggleSection>
+    <span slot='label'>Effects</span>
+    <span slot='description'>Does the player choosing this option cause effects?<br>(Set flags, or change the game state)</span>
+    <EffectsForm slot='toggled' effects={$formData.effects}/>
+  </ToggleSection>
+
+  <!-- <div class='space-y-2'>
+    <Label>Effects</Label>
+    <Switch bind:checked={effects} />
+    <div class="text-[0.8rem] text-muted-foreground">
+      Does this option have effects? <br>(Set flags, or change the game state)
+    </div>
+  </div>  
+
+  {#if effects}
+    <Separator />
+    <EffectsForm effects={$formData.effects} />
+  {/if}  -->
+</form>
