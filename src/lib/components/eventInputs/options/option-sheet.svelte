@@ -10,7 +10,7 @@
   <Sheet.Trigger class={buttonVariants({ variant: "outline" })}>
     Edit
   </Sheet.Trigger>
-  <Sheet.Content>
+  <Sheet.Content class='overflow-y-scroll w-[400px] sm:w-[540px]'>
     <Sheet.Header class="mb-4">
       <Sheet.Title>Option settings</Sheet.Title>
       <Sheet.Description>
