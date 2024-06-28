@@ -94,7 +94,7 @@ export class Option {
   }
 }
 
-class Effects {
+export class Effects {
   addFlags: string[];
   removeFlags: string[];
   editEvents: EventChanges;
@@ -166,4 +166,19 @@ class GameVFX {
   flicker?: boolean;
   corruption?: boolean;
   ghost?: boolean;
+}
+
+export class Flag {
+  id: ID;
+  name: string;
+  description?: string;
+  value: boolean;
+  setBy?: ID;
+
+  constructor(name: string, value: boolean, description?: string) {
+    this.id = crypto.randomUUID();
+    this.name = name;
+    this.description = description;
+    this.value = value;
+  }
 }
