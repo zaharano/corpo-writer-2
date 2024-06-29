@@ -1,5 +1,5 @@
 import { writable, get } from "svelte/store";
-import { Event, Screen } from "$lib/classes/eventClasses";
+import { Event, Screen, Option } from "$lib/classes/eventClasses";
 import type { ID } from "$lib/classes/eventClasses";
 import { browser } from "$app/environment"
 import settings from "$lib/settings";
@@ -19,6 +19,8 @@ if (browser) {
 // methods on Event class requires the former. 
 export const eventStore = createEventStore(init);
 export const currentEvent = createCurrentEventStore(initEvent);
+export const currentScreen = createCurrentScreenStore();
+export const currentOption = createCurrentOptionStore();
 
 // Save any time the eventStore changes
 eventStore.subscribe((events) => {
@@ -241,5 +243,57 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     allSimplifiedScreens,
     allScreenTitles,
     allScreenSlugs,
+  };
+}
+
+function createCurrentScreenStore(screen: Screen | undefined = undefined) {
+  const { subscribe, update, set } = writable(screen);
+
+  const save = () => {
+    const screen = get(currentScreen);
+    if (!screen) return;
+    currentEvent.editScreen(screen.id, screen);
+  }
+
+  const load = (screen: Screen) => {
+    set(screen);
+  }
+
+  const editOption = (option: Option) => {
+    update((s) => {
+      s.options = s.options.map((o) => (o.id === option.id ? option : o));
+      return s;
+    })
+  }
+
+  return {
+    subscribe,
+    load,
+    save,
+    update,
+    set,
+    editOption
+  };
+}
+
+function createCurrentOptionStore(option: Option | undefined = undefined) {
+  const { subscribe, update, set } = writable(option);
+
+  const save = () => {
+    const option = get(currentOption);
+    if (!option) return;
+    currentScreen.editOption(option);
+  }
+
+  const load = (option: Option) => {
+    set(option);
+  }
+
+  return {
+    subscribe,
+    load,
+    save,
+    update,
+    set,
   };
 }
