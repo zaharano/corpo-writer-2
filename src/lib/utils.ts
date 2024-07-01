@@ -60,3 +60,10 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export function slugGen(title: string, slug: string): string {
+	if (title && !slug) {
+		return title.toLowerCase().replace(/\s/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-{2,}/g,'-').slice(0, 30);
+	}
+	return slug;
+}
