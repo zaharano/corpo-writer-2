@@ -33,9 +33,7 @@
   import { valid } from "$lib/stores/uiStore";
 	import { tick } from "svelte";
 
-  let current = $currentEvent.meta;
-
-  const form = superForm( { ...current }, {
+  const form = superForm( { ...$currentEvent.meta }, {
     dataType: 'json',
 		validators: zodClient(metaFormSchema),
 	});
@@ -48,7 +46,7 @@
     clearTimeout(saveTimer);
     tick().then(() => {
       saveTimer = setTimeout(() => {
-        // console.log(metaFormSchema.safeParse($formData))
+        console.log(metaFormSchema.safeParse($formData))
         if (metaFormSchema.safeParse($formData).success) {
           let ce = $currentEvent;
           ce.meta = { ...ce.meta, ...$formData};
@@ -193,7 +191,7 @@
 
   <Separator />
 
-  <RequirementsForm form={form} />
+  <RequirementsForm form={form} context='event'/>
 
 </form>
 
