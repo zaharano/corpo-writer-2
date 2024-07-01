@@ -110,19 +110,13 @@ export class Effects {
 
 class EventChanges {
   schedule: {
-    add: {
-      event: string;
-      time: number;
-    }[];
-    remove: string[];
-  };
+    event: string;
+    time: number;
+  }[];
   lock: string[];
   unlock: string[];
 
-  constructor(schedule?: { add: { event: string; time: number }[]; remove: string[] }, lock: string[] = [], unlock: string[] = []) {
-    if (!schedule) schedule = { add: [], remove: [] };
-    if (!schedule.add) schedule.add = [];
-    if (!schedule.remove) schedule.remove = [];
+  constructor(schedule: { event: string, time: number }[] = [], lock: string[] = [], unlock: string[] = []) {
     this.schedule = schedule;
     this.lock = lock;
     this.unlock = unlock;
