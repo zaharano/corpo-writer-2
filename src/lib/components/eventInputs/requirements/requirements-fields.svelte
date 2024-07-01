@@ -1,7 +1,7 @@
 
 <script lang="ts" context="module">
 	import { z } from "zod";
-  import { objWithGameRequirements } from "./game-requirements-form.svelte";
+  import { objWithGameRequirements } from "./game-requirements-fields.svelte";
 
   const requires = objWithGameRequirements.extend({
       flags: z.array(z.string()),
@@ -17,7 +17,7 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
 	import Heading from "../../ui/typography/heading.svelte";
-	import GameRequirementsForm from "./game-requirements-form.svelte";
+	import GameRequirementsForm from "./game-requirements-fields.svelte";
 
   export let form
   export let context = "event";
