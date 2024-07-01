@@ -9,26 +9,25 @@
     text: z.string().min(4).max(600, "Keep screen text below 600 characters."),
     options: z.array(optionFormSchema),
   })
+
+  
 </script>
 
 <script lang="ts">
   import { superForm } from "sveltekit-superforms";
   import SuperDebug from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
-  import { Switch } from "$lib/components/ui/switch/index.js";
+  import Button from "$lib/components/ui/button/button.svelte";
   import {Input} from "$lib/components/ui/input/index.js";
   import * as Form from "$lib/components/ui/form/index.js";
-  import {Separator} from "$lib/components/ui/separator/index";
-  // import OptionForm from "./option-form.svelte";
 
   import { currentEvent } from "$lib/stores/eventStore.js";
-  // import { valid } from "$lib/stores/uiStore";
   import { browser } from "$app/environment";
   import { tick } from "svelte";
-	import type { Screen } from "$lib/classes/eventClasses";
+  import { valid } from "$lib/stores/uiStore";
+	import { Option, type Screen } from "$lib/classes/eventClasses";
 	import Textarea from "$lib/components/ui/textarea/textarea.svelte";
 
-  import OptionForm from "$lib/components/eventInputs/options/option-form.svelte"
 	import OptionTable from "$lib/components/eventInputs/options/option-table.svelte";
 
   export let screen: Screen;
@@ -39,6 +38,30 @@
   });
 
   const { form: formData, enhance } = form;
+
+  // TODO: Generalize this to use elsewhere autosave to currentEvent
+
+  // function accepts thing {screen: stuff} then this gets spread into the set under currentEvent
+  // save timer also passed in?
+  function saveChanges(schema, newStuff, saveTimer) {
+    clearTimeout(saveTimer);
+    tick().then(() => {
+      saveTimer = setTimeout(() => {
+        // console.log(schema.safeParse($formData))
+        if (schema.safeParse($formData).success) {
+          currentEvent.set(
+            { 
+              ...$currentEvent, 
+              ...newStuff 
+            }
+          );
+          valid.set(true);
+        } else {
+          valid.set(false);
+        }
+      }, 50);
+    });
+  }
 
   function slugGen() {
     if ($formData.title && !$formData.slug) {
@@ -57,9 +80,10 @@
     options: `${$formData.options.length} option(s)`,
   }
 
+  let saveTimer: ReturnType<typeof setTimeout>;
 </script>
 
-<form method="POST" class="mt-8 space-y-8" id="screen-form" use:enhance on:change={() => {}}>
+<form method="POST" class="mt-8 space-y-8" id="screen-form" use:enhance on:change={() => saveChanges(screenFormSchema, {screens: $currentEvent.screens.map(s => s.id === screen.id ? $formData : s)}, saveTimer)}>
   <Form.Field {form} name="title">
 		<Form.Control let:attrs>
 			<Form.Label>Title</Form.Label>
@@ -99,7 +123,8 @@
     <Form.FieldErrors />
   </Form.Field>
   
-  <OptionTable options={$formData.options} />
+  <OptionTable {form} {saveChanges} />
+  <Button variant="outline" type="button" class="w-full" on:click={() => $formData.options = [...$formData.options, new Option()]}>Add Option</Button>
 </form>
 
 {#if browser}

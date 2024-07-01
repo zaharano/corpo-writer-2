@@ -2,34 +2,29 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
 
-  import RequirementsForm, { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-form.svelte";
-  import { effectsFormSchema } from "$lib/components/eventInputs/effects/effects-form.svelte";
+  import RequirementsForm, { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
+  import { effectsFormSchema } from "$lib/components/eventInputs/effects/effects-fields.svelte";
 
   export const optionFormSchema = objWithRequirements.extend({
     text: z.string().min(4).max(400),
     next: z.string(),
-    // effects: effectsFormSchema,
+    effects: effectsFormSchema,
   })
 </script>
 
 <script lang="ts">
-  import { superForm } from "sveltekit-superforms";
-  import { zodClient } from "sveltekit-superforms/adapters";
   import { Input } from "$lib/components/ui/input/index.js";
   import * as Form from "$lib/components/ui/form/index.js";
-  import { Separator } from "$lib/components/ui/separator/index";
-  import { Switch } from "$lib/components/ui/switch/index.js";
   import { Option } from "$lib/classes/eventClasses";
 	import ScreenComboBox from "../screen/screenComboBox.svelte";
-	import EffectsForm from "../effects/effects-form.svelte";
-	import { Label } from "$lib/components/ui/label";
+	import EffectsForm from "../effects/effects-fields.svelte";
 	import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
+	import { superForm } from "sveltekit-superforms";
+	import { zodClient } from "sveltekit-superforms/adapters";
+	import { Button } from "$lib/components/ui/button";
+	import FormFieldErrors from "$lib/components/ui/form/form-field-errors.svelte";
 
-  export let option: Option;
-  export let handleSave: () => void;
-
-  let effects = false;
-  let events = false;
+  export let option : Option;
 
   const form = superForm( { ...option }, {
     dataType: 'json',
@@ -37,6 +32,10 @@
   });
 
   const { form: formData, enhance } = form;
+
+  formData.subscribe((value) => {
+    console.log(value);
+  });
 
 </script>
 
@@ -49,6 +48,7 @@
     <Form.Description>
       The text the user will be selecting.
     </Form.Description>
+    <Form.FormFieldErrors />
   </Form.Field>
 
   <!-- TODO: bind to what I need -->
@@ -86,4 +86,9 @@
     <Separator />
     <EffectsForm effects={$formData.effects} />
   {/if}  -->
+
+  <Button class='mt-4 w-full' on:click={() => {
+    handleSave($formData);
+  }}>Save and Close</Button>
+  <Button class='mt-4 w-full' variant='destructive'>Delete Option</Button>
 </form>

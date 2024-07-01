@@ -1,13 +1,40 @@
 <script lang='ts'>
-  import { currentEvent } from "$lib/stores/eventStore";
-  import * as Table from "$lib/components/ui/table/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
+  import * as Table from "$lib/components/ui/table/index.js";
   import { Check } from "lucide-svelte";
+  import { Option } from "$lib/classes/eventClasses";
 	import DeleteDialog from "../event/delete-dialog.svelte";
 	import OptionSheet from "./option-sheet.svelte";
 	import Heading from "$lib/components/ui/typography/heading.svelte";
 
-  export let options = [];
+  export let form;
+  export let saveChanges;
+
+  const { form: formData } = form;
+
+  function handleSave(newOption: Option) {
+    formData.update((f) => {
+      f.options = f.options.map((o) => {
+        if (o.id === newOption.id) {
+          return newOption;
+        }
+        return o;
+      });
+      return f;
+    });
+    // $formData.options = $formData.options.map((o) => {
+    //   if (o.id === newOption.id) {
+    //     return newOption;
+    //   }
+    //   return o;
+    // });
+  }
+
+  // formData.subscribe((value) => {
+  //   console.log(value);
+  // });
+
+
 </script>
 
 
@@ -24,14 +51,21 @@
     </Table.Row>
   </Table.Header>
   <Table.Body>
-    {#each options as option, i (i)}
+    {#each $formData.options as option, i (i)}
       <Table.Row>
-        <Table.Cell class="font-medium">{option.text.slice(0,20) + '...'}</Table.Cell>
+        <Table.Cell class="font-medium">
+          {option.text.length === 0 ?
+            '(No text entered)' : 
+            option.text.length > 20 ? 
+            option.text.slice(0,20) + '...' :
+            option.text}
+        </Table.Cell>
         <Table.Cell>
-          <OptionSheet option={option} />
+          <OptionSheet {option} {handleSave}>
+            <Button>Edit</Button>
+          </OptionSheet>
           <DeleteDialog handleDelete={() => {
-            currentEvent.removeScreen(screen.id);
-          }} />
+            $formData.options = $formData.options.filter((o) => o.id !== option.id)}}/>
         </Table.Cell>
       </Table.Row>
     {/each}

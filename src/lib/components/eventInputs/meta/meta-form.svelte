@@ -1,7 +1,7 @@
 
 <script lang="ts" context="module">
 	import { z } from "zod";
-  import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-form.svelte";
+  import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
   import { newEventSchema } from "$lib/types/formSchemas";
 
   const partialSchema = objWithRequirements.merge(newEventSchema.innerType());
@@ -25,7 +25,7 @@
   import * as Form from "$lib/components/ui/form/index.js";
   import {Slider} from "$lib/components/ui/slider/index.js";
   import {Separator} from "$lib/components/ui/separator/index";
-  import RequirementsForm from "$lib/components/eventInputs/requirements/requirements-form.svelte";
+  import RequirementsForm from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
 
   import { browser } from "$app/environment";
 
