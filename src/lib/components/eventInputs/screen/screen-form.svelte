@@ -35,6 +35,7 @@
 
   const form = superForm( { ...screen }, {
     dataType: 'json',
+    //@ts-ignore - TODO figure out later
     validators: zodClient(screenFormSchema),
   });
 
