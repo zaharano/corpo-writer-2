@@ -2,12 +2,12 @@
 	import { z } from "zod";
 
   const gameVFXFormSchema = z.object({
-    typeSpeed: z.coerce.number().int().min(1).max(100),
-    tracker: z.boolean(),
-    enhancedTracker: z.boolean(),
-    flicker: z.boolean(),
-    curruption: z.boolean(),
-    ghost: z.boolean(),
+    typeSpeed: z.coerce.number().int().min(1).max(100).optional(),
+    tracker: z.boolean().optional(),
+    enhancedTracker: z.boolean().optional(),
+    flicker: z.boolean().optional(),
+    corruption: z.boolean().optional(),
+    ghost: z.boolean().optional(),
   })
 
   const gameEffectsFormSchema = gameVFXFormSchema.extend({
@@ -34,10 +34,10 @@
 
   const eventListSchema = z.array(z.string()).superRefine((obj, ctx) => {
     // rewrite to check that all events exist
-    if (obj.length === 0) {
+    if (false) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Must have at least one event",
+        message: "Attempting to lock/unlock an event that doesn't exist",
       })
     }
   })
@@ -45,10 +45,10 @@
   // TODO: low priority
   const removeFlagSchema = z.array(z.string()).superRefine((obj, ctx) => {
     // rewrite to check that all flags exist
-    if (obj.length === 0) {
+    if (false) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Must have at least one flag",
+        message: "Removing a flag that isn't set",
       })
     }
   })
