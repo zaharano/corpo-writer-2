@@ -16,7 +16,7 @@
   });
  
   let open = false;
-  let value = "";
+  export let value = "";
  
   $: selectedValue =
     screens.find((f) => f.id === value)?.name ??
@@ -47,9 +47,15 @@
     </Button>
   </Popover.Trigger>
   <Popover.Content class="w-full p-0">
-    <Command.Root>
+    <Command.Root filter={(value, search) => {
+      const item = screens.find(item => item.id === value)
+       if (!item) return 0
+       if (item.name.toLowerCase().includes(search.toLowerCase()))
+         return 1
+       return 0
+     }}>
       <Command.Input placeholder="Search screens..." />
-      <Command.Empty>Create screen stub</Command.Empty>
+      <Command.Empty><NewThingDialog purpose='stubScreen' /></Command.Empty>
       <Command.Group>
         {#each screens as screen}
           <Command.Item
@@ -69,6 +75,7 @@
           </Command.Item>
         {/each}
       </Command.Group>
+      <Command.Separator />
       <Command.Group>
         <NewThingDialog purpose='stubScreen' />
       </Command.Group>
