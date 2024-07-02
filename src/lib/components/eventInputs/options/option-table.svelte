@@ -2,7 +2,7 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Table from "$lib/components/ui/table/index.js";
   import { Check } from "lucide-svelte";
-  import { Option } from "$lib/classes/eventClasses";
+  import type { Option } from "$lib/classes/eventClasses";
 	import DeleteDialog from "../event/delete-dialog.svelte";
 	import OptionSheet from "./option-sheet.svelte";
   import OptionForm from "./option-form.svelte";
@@ -11,30 +11,6 @@
   export let form;
 
   const { form: formData } = form;
-
-  function handleSave(newOption: Option) {
-    formData.update((f) => {
-      f.options = f.options.map((o) => {
-        if (o.id === newOption.id) {
-          return newOption;
-        }
-        return o;
-      });
-      return f;
-    });
-    // $formData.options = $formData.options.map((o) => {
-    //   if (o.id === newOption.id) {
-    //     return newOption;
-    //   }
-    //   return o;
-    // });
-  }
-
-  // formData.subscribe((value) => {
-  //   console.log(value);
-  // });
-
-
 </script>
 
 
@@ -63,11 +39,14 @@
             option.text}
         </Table.Cell>
         <Table.Cell>
-          <OptionSheet >
+          <OptionSheet>
             <Button slot="trigger">Edit</Button>
-            <OptionForm slot="form" bind:option={$formData.options[i]} />
+            <OptionForm slot="form" bind:option={$formData.options[i]} handleDelete={() => {
+              //@ts-ignore - TODO figure out later
+            $formData.options = $formData.options.filter((o) => o.id !== option.id)}} />
           </OptionSheet>
-          <DeleteDialog handleDelete={() => {
+          <DeleteDialog thingToDelete='option' handleDelete={() => {
+              //@ts-ignore
             $formData.options = $formData.options.filter((o) => o.id !== option.id)}}/>
         </Table.Cell>
       </Table.Row>
