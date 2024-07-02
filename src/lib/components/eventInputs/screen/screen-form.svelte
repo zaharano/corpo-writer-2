@@ -25,6 +25,7 @@
   import { browser } from "$app/environment";
   import { tick } from "svelte";
   import { valid } from "$lib/stores/uiStore";
+  import { slugGen } from "$lib/utils";
 	import { Option, type Screen } from "$lib/classes/eventClasses";
 	import Textarea from "$lib/components/ui/textarea/textarea.svelte";
 
@@ -39,20 +40,22 @@
 
   const { form: formData, enhance } = form;
 
-  // TODO: Generalize this to use elsewhere autosave to currentEvent
-
+  // TODO: Generalize this to use elsewhere autosave to currentEvent?
   // function accepts thing {screen: stuff} then this gets spread into the set under currentEvent
   // save timer also passed in?
-  function saveChanges(schema, newStuff, saveTimer) {
+
+ 
+  let saveTimer: ReturnType<typeof setTimeout>;
+  function saveScreen() {
     clearTimeout(saveTimer);
     tick().then(() => {
       saveTimer = setTimeout(() => {
-        // console.log(schema.safeParse($formData))
-        if (schema.safeParse($formData).success) {
+        console.log(screenFormSchema.safeParse($formData))
+        if (screenFormSchema.safeParse($formData).success) {
           currentEvent.set(
             { 
-              ...$currentEvent, 
-              ...newStuff 
+              ...$currentEvent,
+              screens: $currentEvent.screens.map(s => s.id === screen.id ? $formData : s)
             }
           );
           valid.set(true);
@@ -63,16 +66,15 @@
     });
   }
 
-  function slugGen() {
-    if ($formData.title && !$formData.slug) {
-      $formData.slug = $formData.title.toLowerCase().replace(/\s/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-{2,}/g,'-').slice(0, 30);
-    }
-  }
-
   function handleSlider() {
     tick().then(() => {
       // saveMeta();
     });
+  }
+
+  // Avoid repeating arrow funcs for each event
+  function slugHelper() {
+    $formData.slug = slugGen($formData.title, $formData.slug);
   }
 
   $: debugData = {
@@ -80,10 +82,9 @@
     options: `${$formData.options.length} option(s)`,
   }
 
-  let saveTimer: ReturnType<typeof setTimeout>;
 </script>
 
-<form method="POST" class="mt-8 space-y-8" id="screen-form" use:enhance on:change={() => saveChanges(screenFormSchema, {screens: $currentEvent.screens.map(s => s.id === screen.id ? $formData : s)}, saveTimer)}>
+<form method="POST" class="mt-8 space-y-8" id="screen-form" use:enhance on:change={saveScreen}>
   <Form.Field {form} name="title">
 		<Form.Control let:attrs>
 			<Form.Label>Title</Form.Label>
@@ -102,8 +103,8 @@
         placeholder="a-shortcut-to-mushrooms" 
         {...attrs} 
         bind:value={$formData.slug} 
-        on:focus={slugGen} 
-        on:blur={slugGen} 
+        on:focus={slugHelper} 
+        on:blur={slugHelper}
       />
     </Form.Control>
     <Form.Description>
@@ -123,7 +124,7 @@
     <Form.FieldErrors />
   </Form.Field>
   
-  <OptionTable {form} {saveChanges} />
+  <OptionTable {form}/>
   <Button variant="outline" type="button" class="w-full" on:click={() => $formData.options = [...$formData.options, new Option()]}>Add Option</Button>
 </form>
 
