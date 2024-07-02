@@ -46,7 +46,6 @@
     clearTimeout(saveTimer);
     tick().then(() => {
       saveTimer = setTimeout(() => {
-        console.log(metaFormSchema.safeParse($formData))
         if (metaFormSchema.safeParse($formData).success) {
           let ce = $currentEvent;
           ce.meta = { ...ce.meta, ...$formData};
