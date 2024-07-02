@@ -19,16 +19,20 @@
   import * as Form from "$lib/components/ui/form/index.js";
   import { Option } from "$lib/classes/eventClasses";
 	import ScreenComboBox from "../screen/screenComboBox.svelte";
-  import RequirementsFields from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
+  import RequirementsFields, {checkIfRequirements} from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
 	import EffectsFields from "$lib/components/eventInputs/effects/effects-fields.svelte";
 	import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
 	import SuperDebug, { superForm } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { Button } from "$lib/components/ui/button";
+  import * as Sheet from "$lib/components/ui/sheet";
+  import DeleteDialog from "../event/delete-dialog.svelte"; 
 
 
   export let option : Partial<Option>;
   export let open = true;
+  export let handleDelete: () => void;
+
   let valid = true;
 
   const form = superForm( { ...option }, {
@@ -40,6 +44,7 @@
   const { form: formData, enhance } = form;
 
   function saveOption() {
+    console.log(optionFormSchema.safeParse($formData));
     if (optionFormSchema.safeParse($formData).success) {
       option = $formData;
       valid = true;
@@ -49,8 +54,10 @@
   }
   // save changes directly to current event object
   formData.subscribe((value) => {
-    console.log(value);
+    // console.log(value);
   });
+
+  let reqs = checkIfRequirements($formData.requires);
 
 </script>
 
@@ -58,7 +65,7 @@
   <Form.Field {form} name="text">
     <Form.Control let:attrs>
       <Form.Label>Text</Form.Label>
-      <Input placeholder="You find a shiny rock." {...attrs} bind:value={$formData.text} />
+      <Input placeholder="Sally forth!" {...attrs} bind:value={$formData.text} />
     </Form.Control>
     <Form.Description>
       The text the user will be selecting.
@@ -80,7 +87,7 @@
 
   <!-- upon toggling off these sections, the data should be cleared -->
    <!-- if data exists in these sections, the toggle should be on -->
-  <ToggleSection toggle={!!$formData.requires}>
+  <ToggleSection toggle={reqs}>
     <span slot='label'>Requirements</span>
     <span slot='description'>Does this option have requirements? Flags or other game state.</span>
     <RequirementsFields slot='toggled' {form} context='option'/>
@@ -92,18 +99,19 @@
     <EffectsFields slot='toggled' {form}/>
   </ToggleSection>
 
-  <Button class='mt-4 w-full' disabled={!valid} on:click={() => {
-    if (!optionFormSchema.safeParse($formData).success) {
-      valid = false;
-    } else {
-      saveOption();
-      open = false;
-    }
-  }}>Save and Close</Button>
-  <Button class='mt-4 w-full' variant='destructive' on:click={() => {
-    handleDelete();
-    open = false;
-  }}>Delete Option</Button>
+  <Sheet.Close class='w-full'>
+    <Button class='mt-4 w-full' disabled={!valid} on:click={() => {
+      if (!optionFormSchema.safeParse($formData).success) {
+        valid = false;
+      } else {
+        saveOption();
+        open = false;
+      }
+    }}>Save and Close</Button>
+  </Sheet.Close>
+  
+  <DeleteDialog {handleDelete} class='w-full' />
+  
 </form>
 
 <SuperDebug data={$formData} />

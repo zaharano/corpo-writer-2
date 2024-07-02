@@ -19,6 +19,11 @@
   });
 
   export type ObjWithGameRequirements = typeof objWithGameRequirements;
+  type GameRequirements = z.infer<typeof gameRequirements>;
+
+  export function checkIfGameRequirements(obj: GameRequirements) {
+    return !!(obj?.minLevel || obj?.maxLevel);
+  }
 </script>
 
 <script lang="ts">

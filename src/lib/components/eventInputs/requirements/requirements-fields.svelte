@@ -1,7 +1,7 @@
 
 <script lang="ts" context="module">
 	import { z } from "zod";
-  import { objWithGameRequirements } from "./game-requirements-fields.svelte";
+  import { objWithGameRequirements, checkIfGameRequirements } from "./game-requirements-fields.svelte";
 
   const requires = objWithGameRequirements.extend({
       flags: z.array(z.string()),
@@ -11,7 +11,12 @@
 		requires: requires,
 	});
 
-	export type ObjWithRequirements = typeof objWithRequirements;
+  type Requirements = z.infer<typeof requires>;
+
+  export function checkIfRequirements(obj: Requirements | undefined) {
+    if (!obj) return false;
+    return obj.flags.length > 0 || checkIfGameRequirements(obj.gameReqs);
+  }
 </script>
 
 <script lang="ts">
