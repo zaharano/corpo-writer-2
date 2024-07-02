@@ -16,7 +16,7 @@
         Edit this option.
       </Sheet.Description>
     </Sheet.Header>
-    <slot name="form">No slotted content!</slot>
+    <slot name="form">No slotted form!</slot>
     <Sheet.Footer>
     </Sheet.Footer>
   </Sheet.Content>

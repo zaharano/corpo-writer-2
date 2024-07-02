@@ -116,10 +116,10 @@
   <Form.Field {form} name="text">
     <Form.Control let:attrs>
       <Form.Label>Text</Form.Label>
-      <Textarea placeholder="The text for this screen." {...attrs} bind:value={$formData.text} class="resize-none" />
+      <Textarea placeholder="Once upon a time..." {...attrs} bind:value={$formData.text} class="resize-none" />
     </Form.Control>
     <Form.Description>
-      The text for this screen.
+      The primary text that displays when the player is on this screen.
     </Form.Description>
     <Form.FieldErrors />
   </Form.Field>
