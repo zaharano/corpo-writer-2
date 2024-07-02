@@ -30,6 +30,6 @@
   <p class="text-sm text-muted-foreground">Does this event have requirements to be available?</p>
 </div>
 
-<GameRequirementsForm {form} context="event" />
+<GameRequirementsForm {form} context={context} />
 
 <!-- ComboBox of allFlags, no option to add -->
