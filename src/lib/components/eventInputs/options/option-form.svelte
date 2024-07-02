@@ -2,7 +2,7 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
 
-  import RequirementsForm, { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
+  import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
   import { effectsFormSchema } from "$lib/components/eventInputs/effects/effects-fields.svelte";
 
   export const optionFormSchema = objWithRequirements.extend({
@@ -10,6 +10,8 @@
     next: z.string(),
     effects: effectsFormSchema,
   })
+
+  export type OptionFormSchema = typeof optionFormSchema
 </script>
 
 <script lang="ts">
@@ -17,29 +19,42 @@
   import * as Form from "$lib/components/ui/form/index.js";
   import { Option } from "$lib/classes/eventClasses";
 	import ScreenComboBox from "../screen/screenComboBox.svelte";
-	import EffectsForm from "../effects/effects-fields.svelte";
+  import RequirementsFields from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
+	import EffectsFields from "$lib/components/eventInputs/effects/effects-fields.svelte";
 	import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
-	import { superForm } from "sveltekit-superforms";
+	import SuperDebug, { superForm } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { Button } from "$lib/components/ui/button";
-	import FormFieldErrors from "$lib/components/ui/form/form-field-errors.svelte";
 
-  export let option : Option;
+
+  export let option : Partial<Option>;
+  export let open = true;
+  let valid = true;
 
   const form = superForm( { ...option }, {
     dataType: 'json',
+    //@ts-ignore - TODO figure out later
     validators: zodClient(optionFormSchema),
   });
 
   const { form: formData, enhance } = form;
 
+  function saveOption() {
+    if (optionFormSchema.safeParse($formData).success) {
+      option = $formData;
+      valid = true;
+    } else {
+      valid = false;
+    }
+  }
+  // save changes directly to current event object
   formData.subscribe((value) => {
     console.log(value);
   });
 
 </script>
 
-<form method="POST" class="space-y-4" id="option-form" use:enhance on:change={() => {}}>
+<form method="POST" class="space-y-4 mb-4" id="option-form" use:enhance on:change={saveOption}>
   <Form.Field {form} name="text">
     <Form.Control let:attrs>
       <Form.Label>Text</Form.Label>
@@ -55,40 +70,40 @@
   <Form.Field {form} name="next">
     <Form.Control let:attrs>
       <Form.Label>Next Screen</Form.Label><br>
-      <ScreenComboBox />
+      <ScreenComboBox bind:value={$formData.next}/>
     </Form.Control>
     <Form.Description>
       Select the screen this option leads to.
     </Form.Description>
+    <Form.FormFieldErrors />
   </Form.Field>
 
-  <ToggleSection>
+  <!-- upon toggling off these sections, the data should be cleared -->
+   <!-- if data exists in these sections, the toggle should be on -->
+  <ToggleSection toggle={!!$formData.requires}>
     <span slot='label'>Requirements</span>
     <span slot='description'>Does this option have requirements? Flags or other game state.</span>
-    <RequirementsForm slot='toggled' {form}/>
+    <RequirementsFields slot='toggled' {form} context='option'/>
   </ToggleSection>
 
   <ToggleSection>
     <span slot='label'>Effects</span>
     <span slot='description'>Does the player choosing this option cause effects?<br>(Set flags, or change the game state)</span>
-    <EffectsForm slot='toggled' effects={$formData.effects}/>
+    <EffectsFields slot='toggled' {form}/>
   </ToggleSection>
 
-  <!-- <div class='space-y-2'>
-    <Label>Effects</Label>
-    <Switch bind:checked={effects} />
-    <div class="text-[0.8rem] text-muted-foreground">
-      Does this option have effects? <br>(Set flags, or change the game state)
-    </div>
-  </div>  
-
-  {#if effects}
-    <Separator />
-    <EffectsForm effects={$formData.effects} />
-  {/if}  -->
-
-  <Button class='mt-4 w-full' on:click={() => {
-    handleSave($formData);
+  <Button class='mt-4 w-full' disabled={!valid} on:click={() => {
+    if (!optionFormSchema.safeParse($formData).success) {
+      valid = false;
+    } else {
+      saveOption();
+      open = false;
+    }
   }}>Save and Close</Button>
-  <Button class='mt-4 w-full' variant='destructive'>Delete Option</Button>
+  <Button class='mt-4 w-full' variant='destructive' on:click={() => {
+    handleDelete();
+    open = false;
+  }}>Delete Option</Button>
 </form>
+
+<SuperDebug data={$formData} />
