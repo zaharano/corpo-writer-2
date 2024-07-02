@@ -5,10 +5,10 @@
   import { Option } from "$lib/classes/eventClasses";
 	import DeleteDialog from "../event/delete-dialog.svelte";
 	import OptionSheet from "./option-sheet.svelte";
+  import OptionForm from "./option-form.svelte";
 	import Heading from "$lib/components/ui/typography/heading.svelte";
 
   export let form;
-  export let saveChanges;
 
   const { form: formData } = form;
 
@@ -53,16 +53,19 @@
   <Table.Body>
     {#each $formData.options as option, i (i)}
       <Table.Row>
+        <!-- want to get this CSS to work -->
+        <!-- class="font-medium text-nowrap overflow-clip text-ellipsis"> -->
         <Table.Cell class="font-medium">
           {option.text.length === 0 ?
             '(No text entered)' : 
-            option.text.length > 20 ? 
-            option.text.slice(0,20) + '...' :
+            option.text.length > 60 ? 
+            option.text.slice(0,60) + '...' :
             option.text}
         </Table.Cell>
         <Table.Cell>
-          <OptionSheet {option} {handleSave}>
-            <Button>Edit</Button>
+          <OptionSheet >
+            <Button slot="trigger">Edit</Button>
+            <OptionForm slot="form" bind:option={$formData.options[i]} />
           </OptionSheet>
           <DeleteDialog handleDelete={() => {
             $formData.options = $formData.options.filter((o) => o.id !== option.id)}}/>
