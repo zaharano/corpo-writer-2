@@ -78,11 +78,13 @@
     $formData.slug = slugGen($formData.title, $formData.slug);
   }
 
+  // don't need ID or writerMeta to display in debug
   $: debugData = {
-    ...$formData,
+    title: $formData.title,
+    slug: $formData.slug,
+    text: $formData.text,
     options: `${$formData.options.length} option(s)`,
   }
-
 </script>
 
 <form method="POST" class="mt-8 space-y-8" id="screen-form" use:enhance on:change={saveScreen}>
