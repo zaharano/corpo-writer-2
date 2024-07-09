@@ -22,8 +22,8 @@
 <div class="space-y-6">
   <div>
     
-    <Heading level={3}>{screen.title}</Heading>
-    <p class="text-sm text-muted-foreground">Edit this screen</p>
+    <Heading level={3}>Editing the screen <span class="bg-muted text-muted-foreground rounded-sm px-2 py-1">{screen.title}</span></Heading>
+    <p class="text-sm text-muted-foreground">Changes saved automatically to the event, but the event must still be saved!</p>
   </div>
   <Separator />
   <ScreenForm {screen} />
