@@ -216,6 +216,11 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     })
   }
 
+  const getScreenBySlug = (slug: string) => {
+    const event = get(currentEvent);
+    return event.screens.find((s) => s.slug === slug);
+  }
+
   const allSimplifiedScreens = () => {
     const event = get(currentEvent);
     return event.screens.map((s) => ({id: s.id, name: s.title}));
@@ -240,6 +245,7 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
     addScreen,
     removeScreen,
     editScreen,
+    getScreenBySlug,
     allSimplifiedScreens,
     allScreenTitles,
     allScreenSlugs,
