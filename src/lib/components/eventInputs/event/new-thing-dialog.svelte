@@ -21,12 +21,12 @@
 
   export let purpose: 'event' | 'screen' = 'event';
   export let stub: boolean = false;
-  export let variant: 'default' | 'secondary' = 'default';
   let eventSlug = $page.params?.slug;
 
   const description = {
     event: 'Add a new event to the game.',
     screen: 'Add a new screen to the current event.',
+    flag: 'Add a new flag to the game.',
   }[purpose] + stub ? `This stub ${purpose} will be available to flesh out later - for now just enter a title and slug to point to.` : '';
   const schema = {
     event: newEventSchema,
@@ -132,10 +132,10 @@
     </form>
 
     <Dialog.Footer>
-      <Button type="button" class={buttonVariants({ variant: "secondary" })} on:click={() => handleSave(false)}>
+      <Button type="button" class={buttonVariants(stub ? { variant: "default" } : { variant: "secondary"})} on:click={() => handleSave(false)}>
         Save and close
       </Button>
-      {#if purpose === 'event' || purpose === 'screen'}
+      {#if !stub}
         <Button type="submit" on:click={() => handleSave(true)}>Save and edit</Button>
       {/if}
     </Dialog.Footer>
