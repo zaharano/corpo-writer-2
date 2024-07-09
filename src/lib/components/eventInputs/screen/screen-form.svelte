@@ -7,7 +7,7 @@
 
   export const screenFormSchema = newScreenSchema.innerType().extend({
     text: z.string().min(4).max(600, "Keep screen text below 600 characters."),
-    options: z.array(optionFormSchema),
+    options: z.array(optionFormSchema).min(1, "Screens must have at least one option."),
   })
 
   
@@ -127,8 +127,11 @@
     <Form.FieldErrors />
   </Form.Field>
   
-  <OptionTable {form}/>
-  <Button variant="outline" type="button" class="w-full" on:click={() => $formData.options = [...$formData.options, new Option()]}>Add Option</Button>
+  <Form.Field {form} name="options">
+    <OptionTable {form}/>
+    <Button variant="outline" type="button" class="w-full" on:click={() => $formData.options = [...$formData.options, new Option()]}>Add Option</Button>
+    <Form.FieldErrors />
+  </Form.Field>
 </form>
 
 {#if browser}
