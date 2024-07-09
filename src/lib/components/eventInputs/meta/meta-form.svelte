@@ -32,6 +32,7 @@
   import { currentEvent } from "$lib/stores/eventStore.js";
   import { valid } from "$lib/stores/uiStore";
 	import { tick } from "svelte";
+	import Heading from "$lib/components/ui/typography/heading.svelte";
 
   const form = superForm( { ...$currentEvent.meta }, {
     dataType: 'json',
@@ -189,6 +190,10 @@
   </Form.Field>
 
   <Separator />
+  <div>
+    <Heading level={4}>Requirements</Heading>
+    <p class="text-sm text-muted-foreground">Does this event have requirements to be available?</p>
+  </div>
 
   <RequirementsForm form={form} context='event'/>
 
