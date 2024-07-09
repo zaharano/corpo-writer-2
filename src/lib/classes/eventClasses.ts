@@ -95,8 +95,8 @@ export class Option {
 }
 
 export class Effects {
-  addFlags: string[];
-  removeFlags: string[];
+  addFlags: ID[];
+  removeFlags: ID[];
   editEvents: EventChanges;
   gameEffects: GameEffects;
 
@@ -124,10 +124,10 @@ class EventChanges {
 }
 
 export class Requirements {
-  flags: string[];
+  flags: ID[];
   gameReqs: GameRequirements;
 
-  constructor(gameReqs?: GameRequirements, flags?: string[]) {
+  constructor(gameReqs?: GameRequirements, flags?: ID[]) {
     this.gameReqs = gameReqs || new GameRequirements();
     this.flags = flags || [];
   }
@@ -163,11 +163,11 @@ class GameVFX {
 }
 
 export class Flag {
-  id: ID;
+  readonly id: ID;
   name: string;
   description?: string;
   value: boolean;
-  setBy?: ID;
+  setBy?: ID[];
 
   constructor(name: string, value: boolean, description?: string) {
     this.id = crypto.randomUUID();
