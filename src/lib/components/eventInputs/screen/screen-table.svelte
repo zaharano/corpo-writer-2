@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { currentEvent } from "$lib/stores/eventStore";
+  import { currentEvent } from "$lib/stores";
   import * as Table from "$lib/components/ui/table/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Check } from "lucide-svelte";

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { eventStore, currentEvent } from "$lib/stores/eventStore.js";
+import { eventStore, currentEvent } from "$lib/stores";
 
 const objWithTitleAndSlugSchema = z.object({
   title: z
