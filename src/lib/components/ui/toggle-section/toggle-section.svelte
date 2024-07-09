@@ -17,5 +17,7 @@
 
 {#if toggle}
   <Separator />
-  <slot name='toggled'/>
+  <div class="bg-stone-50 p-2 rounded-sm">
+    <slot name='toggled' />
+  </div>
 {/if} 
