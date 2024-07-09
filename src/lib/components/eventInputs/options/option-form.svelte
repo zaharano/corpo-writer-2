@@ -18,7 +18,7 @@
   import { Input } from "$lib/components/ui/input/index.js";
   import * as Form from "$lib/components/ui/form/index.js";
   import { Option } from "$lib/classes/eventClasses";
-	import ScreenComboBox from "../screen/screenComboBox.svelte";
+	import ScreenComboBox from "../comboBox.svelte";
   import RequirementsFields, {checkIfRequirements} from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
 	import EffectsFields from "$lib/components/eventInputs/effects/effects-fields.svelte";
 	import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
@@ -27,6 +27,7 @@
 	import { Button } from "$lib/components/ui/button";
   import * as Sheet from "$lib/components/ui/sheet";
   import DeleteDialog from "../event/delete-dialog.svelte"; 
+	import { currentEvent } from "$lib/stores/eventStore";
 
 
   export let option : Partial<Option>;
@@ -59,6 +60,11 @@
 
   let reqs = checkIfRequirements($formData.requires);
 
+  let screens = currentEvent.allSimplifiedScreens();
+  currentEvent.subscribe((_) => {
+    screens = currentEvent.allSimplifiedScreens();
+  });
+
 </script>
 
 <form method="POST" class="space-y-4 mb-4" id="option-form" use:enhance on:change={saveOption}>
@@ -77,7 +83,7 @@
   <Form.Field {form} name="next">
     <Form.Control let:attrs>
       <Form.Label>Next Screen</Form.Label><br>
-      <ScreenComboBox bind:value={$formData.next}/>
+      <ScreenComboBox bind:value={$formData.next} purpose='screen' targets={screens} />
     </Form.Control>
     <Form.Description>
       Select the screen this option leads to.

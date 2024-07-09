@@ -7,20 +7,16 @@
   import { cn } from "$lib/utils.js";
   import { tick } from "svelte";
 
-  import { currentEvent } from "$lib/stores/eventStore";
-	import NewThingDialog from "../event/new-thing-dialog.svelte";
- 
-  let screens = currentEvent.allSimplifiedScreens();
-  currentEvent.subscribe((_) => {
-    screens = currentEvent.allSimplifiedScreens();
-  });
+	import NewThingDialog from "./event/new-thing-dialog.svelte";
  
   let open = false;
   export let value = "";
+  export let targets: {id: string, name: string}[] = [];
+  export let purpose: 'screen' | 'event' = "screen";
  
   $: selectedValue =
-    screens.find((f) => f.id === value)?.name ??
-    "Select next screen...";
+    targets.find((f) => f.id === value)?.name ??
+    `Select a ${purpose}...`;
  
   // We want to refocus the trigger button when the user selects
   // an item from the list so users can continue navigating the
@@ -48,18 +44,18 @@
   </Popover.Trigger>
   <Popover.Content class="w-full p-0">
     <Command.Root filter={(value, search) => {
-      const item = screens.find(item => item.id === value)
+      const item = targets.find(item => item.id === value)
        if (!item) return 0
        if (item.name.toLowerCase().includes(search.toLowerCase()))
          return 1
        return 0
      }}>
-      <Command.Input placeholder="Search screens..." />
-      <Command.Empty><NewThingDialog purpose='stubScreen' /></Command.Empty>
+      <Command.Input placeholder={`Search ${purpose}s...`} />
+      <Command.Empty class="text-left p-1"><NewThingDialog {purpose} stub/></Command.Empty>
       <Command.Group>
-        {#each screens as screen}
+        {#each targets as target}
           <Command.Item
-            value={screen.id}
+            value={target.id}
             onSelect={(currentValue) => {
               value = currentValue;
               closeAndFocusTrigger(ids.trigger);
@@ -68,16 +64,16 @@
             <Check
               class={cn(
                 "mr-2 h-4 w-4",
-                value !== screen.id && "text-transparent"
+                value !== target.id && "text-transparent"
               )}
             />
-            {screen.name}
+            {target.name}
           </Command.Item>
         {/each}
       </Command.Group>
       <Command.Separator />
       <Command.Group>
-        <NewThingDialog purpose='stubScreen' />
+        <NewThingDialog {purpose} stub />
       </Command.Group>
     </Command.Root>
   </Popover.Content>
