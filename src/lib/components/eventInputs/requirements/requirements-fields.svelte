@@ -30,10 +30,15 @@
   const { form: formData } = form;
 </script>
 
-<div>
-  <Heading level={4}>Requirements</Heading>
-  <p class="text-sm text-muted-foreground">Does this event have requirements to be available?</p>
-</div>
+<!-- <Form.Field {form} name="flags">
+  <Form.Control let:attrs>
+    <Form.Label>Flags</Form.Label>
+    <Form.Description>Any flags that must be set for this {context} to be available.</Form.Description>
+      <input type="text" {...attrs} bind:value={$formData.requires.flags} />
+    </Form.Field>
+  </Form.Control>
+  <Form.FieldErrors />
+</Form.Field> -->
 
 <GameRequirementsForm {form} context={context} />
 
