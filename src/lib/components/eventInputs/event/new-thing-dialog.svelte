@@ -19,21 +19,18 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  export let purpose: 'event' | 'screen' | 'stubEvent' | 'stubScreen'
+  export let purpose: 'event' | 'screen' = 'event';
+  export let stub: boolean = false;
   export let variant: 'default' | 'secondary' = 'default';
   let eventSlug = $page.params?.slug;
 
   const description = {
-    event: 'Add a new event to the game. A title is required to get started.',
-    screen: 'Add a new screen to this event.',
-    stubEvent: 'Add a new event to the game. This stub event will be available to flesh out later - for now just enter a title and slug to point to.',
-    stubScreen: 'Add a new screen to the current event. This stub screen will be available to flesh out later - for now just enter a title and slug to point to.',
-  }[purpose];
+    event: 'Add a new event to the game.',
+    screen: 'Add a new screen to the current event.',
+  }[purpose] + stub ? `This stub ${purpose} will be available to flesh out later - for now just enter a title and slug to point to.` : '';
   const schema = {
     event: newEventSchema,
     screen: newScreenSchema,
-    stubEvent: newEventSchema,
-    stubScreen: newScreenSchema,
   }[purpose];
 
   const form = superForm( { title: '', slug: '' }, {
@@ -55,13 +52,13 @@
     } else {
       message = '';
       dialogOpen = false;
-      if (purpose === 'event' || purpose === 'stubEvent') {
+      if (purpose === 'event') {
         eventStore.addEvent($formData.title, $formData.slug);
         if (edit) {
           goto(`/events/${$formData.slug}`);
         }
         reset()
-      } else if (purpose === 'screen' || purpose === 'stubScreen') {
+      } else if (purpose === 'screen') {
         currentEvent.addScreen($formData.title, $formData.slug);
         if (edit) {
           goto(`/events/${eventSlug}/screens/${$formData.slug}`);
