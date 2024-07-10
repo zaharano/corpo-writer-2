@@ -29,7 +29,7 @@
   import { currentEvent } from "$lib/stores";
   import { browser } from "$app/environment";
   import { tick } from "svelte";
-  import { valid } from "$lib/stores/uiStore";
+  import { valid } from "$lib/stores";
   import { slugGen } from "$lib/utils";
 	import { Option, type Screen } from "$lib/classes/eventClasses";
 	import Textarea from "$lib/components/ui/textarea/textarea.svelte";

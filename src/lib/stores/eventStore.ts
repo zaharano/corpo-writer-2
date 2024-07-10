@@ -1,7 +1,6 @@
 import { writable, get } from "svelte/store";
 import { Event } from "$lib/classes/eventClasses";
 import type { ID } from "$lib/classes/eventClasses";
-import { eventStore } from ".";
 
 // confirm: runs once?
 // Decide - loading from store means new Event(event) for each, or just the data?
@@ -11,6 +10,7 @@ import { eventStore } from ".";
 // export const currentScreen = createCurrentScreenStore();
 // export const currentOption = createCurrentOptionStore();
 
+export const eventStore = createEventStore([]);
 
 export function createEventStore(init : Event[] = []) {
   const { subscribe, update, set } = writable(init);
@@ -33,7 +33,7 @@ export function createEventStore(init : Event[] = []) {
     });
   }
 
-  const loadSavedEvents = (events : Event[]) => {
+  const load = (events : Event[]) => {
     set(events);
   }
 
@@ -82,7 +82,7 @@ export function createEventStore(init : Event[] = []) {
     addEvent,
     removeEvent,
     editEvent,
-    loadSavedEvents,
+    load,
     getEventBySlug,
     getEventById,
     allEventNames,

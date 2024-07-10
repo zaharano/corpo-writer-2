@@ -2,8 +2,7 @@
 	import SidebarNav from "$lib/components/ui/nav/sidebarnav.svelte";
 	import { Separator } from "$lib/components/ui/separator/index.js";
   import { page, navigating } from "$app/stores";
-  import { eventStore, currentEvent } from "$lib/stores";
-  import { valid } from "$lib/stores/uiStore";
+  import { eventStore, currentEvent, valid } from "$lib/stores";
 	import { goto } from "$app/navigation";
 	import { Button } from "$lib/components/ui/button/index";
 	import DeleteDialog from "$lib/components/eventInputs/event/delete-dialog.svelte";

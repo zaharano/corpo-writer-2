@@ -30,12 +30,13 @@
   import { browser } from "$app/environment";
 
   import { currentEvent } from "$lib/stores";
-  import { valid } from "$lib/stores/uiStore";
+  import { valid } from "$lib/stores";
 	import { tick } from "svelte";
 	import Heading from "$lib/components/ui/typography/heading.svelte";
 
   const form = superForm( { ...$currentEvent.meta }, {
     dataType: 'json',
+    //@ts-ignore - same old thing
 		validators: zodClient(metaFormSchema),
 	});
 

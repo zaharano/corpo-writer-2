@@ -1,7 +1,8 @@
 import { get, writable } from "svelte/store";
 import { Flag } from "../classes/eventClasses";
 import type { ID } from "$lib/classes/eventClasses";
-import { flagStore } from ".";
+
+export const flagStore = createFlagStore([]);
 
 export function createFlagStore(init: Flag[] = []) {
   const { subscribe, update, set } = writable(init);

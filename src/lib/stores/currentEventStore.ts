@@ -1,8 +1,9 @@
 import { writable, get } from "svelte/store";
 import { Event, Screen } from "../classes/eventClasses";
 import type { ID } from "../classes/eventClasses";
-import { eventStore, currentEvent } from ".";
+import { eventStore } from "./eventStore";
 
+export const currentEvent = createCurrentEventStore(null);
 
 export function createCurrentEventStore(initEvent : Event | null = null) {
   // not sure if this is necessary -
