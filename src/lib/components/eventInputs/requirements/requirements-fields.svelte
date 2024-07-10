@@ -5,7 +5,7 @@
   import { setFlagSchema } from "$lib/components/eventInputs/effects/effects-fields.svelte";
 
   const requires = objWithGameRequirements.extend({
-      flags: z.array(setFlagSchema),
+      flags: z.array(setFlagSchema).default([]),
     });
 
 	export const objWithRequirements = z.object({
@@ -23,7 +23,9 @@
 
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
+	import Heading from "../../ui/typography/heading.svelte";
 	import GameRequirementsForm from "./game-requirements-fields.svelte";
+	import { i } from "vitest/dist/reporters-yx5ZTtEV.js";
 
   export let form
   export let context = "event";
