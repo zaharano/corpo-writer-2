@@ -48,17 +48,12 @@ export class EventMeta {
 }
 
 class WriterMeta {
-  status: Status;
-  notes?: string;
+  status: 'draft' | 'published' | 'archived';
 
   constructor() {
     this.status = 'draft';
   }
 }
-
-export const statuses = ['draft', 'completed', 'validated', 'archived'] as const;
-export type Statuses = typeof statuses;
-export type Status = Statuses[number];
 
 export class Screen {
   readonly id: ID;
@@ -67,6 +62,10 @@ export class Screen {
   text: string;
   options: Option[];
   writerMeta: WriterMeta;
+
+  // changeStatus(status: 'draft' | 'published' | 'archived') {
+  //   this.writerMeta.status = status;
+  // }
 
   constructor(title: string, slug: string, id?: ID) {
     if (id) this.id = id;
