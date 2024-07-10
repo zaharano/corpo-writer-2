@@ -2,10 +2,9 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
   import { objWithGameRequirements, checkIfGameRequirements } from "./game-requirements-fields.svelte";
-  import { setFlagSchema } from "$lib/components/eventInputs/effects/effects-fields.svelte";
 
   const requires = objWithGameRequirements.extend({
-      flags: z.array(setFlagSchema).default([]),
+      flags: z.array(z.string()),
     });
 
 	export const objWithRequirements = z.object({
@@ -14,7 +13,6 @@
 
   type Requirements = z.infer<typeof requires>;
 
-  // this type Requirements isn't working because of schema vs class differences
   export function checkIfRequirements(obj: Requirements | undefined) {
     if (!obj) return false;
     return obj.flags.length > 0 || checkIfGameRequirements(obj.gameReqs);
@@ -25,7 +23,6 @@
   import * as Form from "$lib/components/ui/form/index.js";
 	import Heading from "../../ui/typography/heading.svelte";
 	import GameRequirementsForm from "./game-requirements-fields.svelte";
-	import { i } from "vitest/dist/reporters-yx5ZTtEV.js";
 
   export let form
   export let context = "event";

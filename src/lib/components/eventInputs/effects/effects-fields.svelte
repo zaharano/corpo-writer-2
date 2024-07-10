@@ -1,11 +1,6 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
 
-  export const setFlagSchema = z.object({
-    id: z.string(),
-    value: z.boolean(),
-  });
-
   const gameVFXFormSchema = z.object({
     typeSpeed: z.coerce.number().int().min(1).max(100).optional(),
     tracker: z.boolean().optional(),
@@ -46,6 +41,17 @@
       })
     }
   })
+
+  // TODO: low priority
+  const removeFlagSchema = z.array(z.string()).superRefine((obj, ctx) => {
+    // rewrite to check that all flags exist
+    if (false) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Removing a flag that isn't set",
+      })
+    }
+  })
   
   const scheduleEventSchema = z.array(addEventSchema)
 
@@ -56,7 +62,8 @@
   })
 
   export const effectsFormSchema = z.object({
-    setFlags: z.array(setFlagSchema).optional(),
+    addFlags: z.array(z.string().min(5).max(20)).optional(),
+    removeFlags: removeFlagSchema.optional(),
     editEvents: eventChangeSchema.optional(),
   }).merge(gameEffectsFormSchema)
 </script>
