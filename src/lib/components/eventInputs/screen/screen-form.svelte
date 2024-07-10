@@ -6,11 +6,16 @@
   import { optionFormSchema } from "$lib/components/eventInputs/options/option-form.svelte";
 
   export const screenFormSchema = newScreenSchema.innerType().extend({
+    id: z.string(),
     text: z.string().min(4).max(600, "Keep screen text below 600 characters."),
     options: z.array(optionFormSchema).min(1, "Screens must have at least one option."),
+    writerMeta: z.object({
+      status: z.enum(["draft", "completed", "validated", "archived"]),
+      notes: z.string().optional(),
+    }),
   })
 
-  
+  type ScreenForm = z.infer<typeof screenFormSchema>;
 </script>
 
 <script lang="ts">
@@ -31,11 +36,12 @@
 
 	import OptionTable from "$lib/components/eventInputs/options/option-table.svelte";
 
-  export let screen: Screen;
+  // I think this is the issue with all the type stuff - using the Screen class instead of the schema.
+  // I need the ID but maybe just separate it?
+  export let screen: ScreenForm;
 
   const form = superForm( { ...screen }, {
     dataType: 'json',
-    //@ts-ignore - TODO figure out later
     validators: zodClient(screenFormSchema),
   });
 
@@ -44,7 +50,6 @@
   // TODO: Generalize this to use elsewhere autosave to currentEvent?
   // function accepts thing {screen: stuff} then this gets spread into the set under currentEvent
   // save timer also passed in?
-
  
   let saveTimer: ReturnType<typeof setTimeout>;
   function saveScreen() {
