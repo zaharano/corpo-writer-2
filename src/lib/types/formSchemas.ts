@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { eventStore, currentEvent } from "$lib/stores";
+import { eventStore, currentEvent, flagStore } from "$lib/stores";
 
 const objWithTitleAndSlugSchema = z.object({
   title: z
@@ -44,6 +44,16 @@ export const newScreenSchema = objWithTitleAndSlugSchema.superRefine((obj, ctx) 
       code: z.ZodIssueCode.custom,
       message: "Slug must be unique among this events screens",
       path: ["slug"],
+    });
+  }
+});
+
+export const newFlagSchema = objWithTitleAndSlugSchema.superRefine((obj, ctx) => {
+  if (flagStore.allSimplifiedFlags().map(f => f.name).includes(obj.title)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Title must be unique among flags",
+      path: ["title"],
     });
   }
 });

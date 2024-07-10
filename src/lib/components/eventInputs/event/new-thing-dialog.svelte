@@ -1,9 +1,9 @@
 <script lang="ts">
   import { superForm } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
-  import { newEventSchema, newScreenSchema } from "$lib/types/formSchemas";
+  import { newEventSchema, newFlagSchema, newScreenSchema } from "$lib/types/formSchemas";
 
-  import { eventStore, currentEvent } from "$lib/stores/eventStore.js";
+  import { eventStore, currentEvent, flagStore } from "$lib/stores";
 
   import {
     Button,
@@ -19,7 +19,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
 
-  export let purpose: 'event' | 'screen' = 'event';
+  export let purpose: 'event' | 'screen' | 'flag' = 'event';
   export let stub: boolean = false;
   let eventSlug = $page.params?.slug;
 
@@ -31,6 +31,7 @@
   const schema = {
     event: newEventSchema,
     screen: newScreenSchema,
+    flag: newFlagSchema,
   }[purpose];
 
   const form = superForm( { title: '', slug: '' }, {
@@ -47,6 +48,7 @@
 
   function handleSave(edit: boolean) {
     if (!schema.safeParse($formData).success) {
+      // TODO: display actual error message?
       message = 'Please enter a unique title and slug.';
       return;
     } else {
@@ -57,14 +59,18 @@
         if (edit) {
           goto(`/events/${$formData.slug}`);
         }
-        reset()
       } else if (purpose === 'screen') {
         currentEvent.addScreen($formData.title, $formData.slug);
         if (edit) {
           goto(`/events/${eventSlug}/screens/${$formData.slug}`);
         }
-        reset()
+      } else if (purpose === 'flag') {
+        flagStore.addFlag($formData.title, $formData.slug);
+        if (edit) {
+          // TODO: will need to figure out flag editing 
+        }
       }
+      reset()
     }
   }
 
