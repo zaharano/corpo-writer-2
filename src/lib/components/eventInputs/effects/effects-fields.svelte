@@ -56,7 +56,7 @@
   })
 
   export const effectsFormSchema = z.object({
-    setFlags: z.array(setFlagSchema).optional(),
+    setFlags: z.array(z.string()).optional(),
     editEvents: eventChangeSchema.optional(),
   }).merge(gameEffectsFormSchema)
 </script>
