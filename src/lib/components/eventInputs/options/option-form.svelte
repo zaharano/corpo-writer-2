@@ -27,7 +27,7 @@
 	import { Button } from "$lib/components/ui/button";
   import * as Sheet from "$lib/components/ui/sheet";
   import DeleteDialog from "../event/delete-dialog.svelte"; 
-	import { currentEvent } from "$lib/stores";
+	import { currentEvent } from "$lib/stores/eventStore";
 
 
   export let option : Partial<Option>;

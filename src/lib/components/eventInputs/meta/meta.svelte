@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { currentEvent } from "$lib/stores";
+  import { currentEvent } from "$lib/stores/eventStore.js";
 	import { get } from "svelte/store";
 	import Heading from "../../ui/typography/heading.svelte";
 	import Separator from "../../ui/separator/separator.svelte";

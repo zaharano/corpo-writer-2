@@ -29,7 +29,7 @@
 
   import { browser } from "$app/environment";
 
-  import { currentEvent } from "$lib/stores";
+  import { currentEvent } from "$lib/stores/eventStore.js";
   import { valid } from "$lib/stores/uiStore";
 	import { tick } from "svelte";
 	import Heading from "$lib/components/ui/typography/heading.svelte";

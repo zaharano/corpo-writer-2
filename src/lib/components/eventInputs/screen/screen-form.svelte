@@ -21,7 +21,7 @@
   import {Input} from "$lib/components/ui/input/index.js";
   import * as Form from "$lib/components/ui/form/index.js";
 
-  import { currentEvent } from "$lib/stores";
+  import { currentEvent } from "$lib/stores/eventStore.js";
   import { browser } from "$app/environment";
   import { tick } from "svelte";
   import { valid } from "$lib/stores/uiStore";

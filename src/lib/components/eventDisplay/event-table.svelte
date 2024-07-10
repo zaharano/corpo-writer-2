@@ -6,7 +6,7 @@
   import StatusBadge from "$lib/components/eventDisplay/status-badge.svelte";
 
 
-  import { eventStore } from "$lib/stores";
+  import { eventStore } from "$lib/stores/eventStore";
 	import DeleteDialog from "../eventInputs/event/delete-dialog.svelte";
 </script>
 
