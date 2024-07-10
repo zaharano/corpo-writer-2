@@ -1,11 +1,12 @@
+<!-- This was dropped in favor of status-badge dropdown/radio -->
+
 <script lang="ts">
+	import { statuses, type Status } from "$lib/classes/eventClasses";
   import * as Popover from "$lib/components/ui/popover";
   import * as Select from "$lib/components/ui/select";
 
-  export let status : 'draft' | 'published' | 'archived';
-  export let handleChange: (status: 'draft' | 'published' | 'archived') => void;
-
-  const statuses = ['draft', 'published', 'archived']
+  export let status : Status
+  export let handleChange: (status: Status) => void;
 </script>
 
 <Popover.Root>
