@@ -2,17 +2,20 @@
 	import Badge from "../ui/badge/badge.svelte";
   import * as Button from "$lib/components/ui/button/index.js";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { statuses, type Status } from "$lib/classes/eventClasses";
  
   export let className: string = '';
-  export let status: string;
-  export let handleChange: (status: 'draft' | 'published' | 'archived') => void;
+  export let status: Status;
+  export let handleChange: (status: Status) => void;
 
-  function determineClass(status: string) {
+  function determineClass(status: Status) {
     switch (status) {
       case 'draft':
         return 'bg-destructive text-destructive-foreground ' + className;
-      case 'published':
+      case 'completed':
         return '' + className;
+      case 'validated':
+        return 'bg-success text-success-foreground ' + className;
       case 'archived':
         return 'bg-muted text-muted-foreground ' + className;
       default:
@@ -21,7 +24,6 @@
   }
 
   $: style = determineClass(status);
-  const statuses = ['draft', 'published', 'archived'];
 </script>
  
 <DropdownMenu.Root>
