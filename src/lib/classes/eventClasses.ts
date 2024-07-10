@@ -95,14 +95,12 @@ export class Option {
 }
 
 export class Effects {
-  addFlags: ID[];
-  removeFlags: ID[];
+  setFlags: SetFlag[];
   editEvents: EventChanges;
   gameEffects: GameEffects;
 
   constructor() {
-    this.addFlags = [];
-    this.removeFlags = [];
+    this.setFlags = [];
     this.editEvents = new EventChanges();
     this.gameEffects = new GameEffects();
   }
@@ -124,10 +122,10 @@ class EventChanges {
 }
 
 export class Requirements {
-  flags: ID[];
+  flags: SetFlag[];
   gameReqs: GameRequirements;
 
-  constructor(gameReqs?: GameRequirements, flags?: ID[]) {
+  constructor(gameReqs?: GameRequirements, flags?: { id: ID, value: boolean }[]) {
     this.gameReqs = gameReqs || new GameRequirements();
     this.flags = flags || [];
   }
@@ -165,14 +163,18 @@ class GameVFX {
 export class Flag {
   readonly id: ID;
   name: string;
+  slug: string;
   description?: string;
-  value: boolean;
+  value?: boolean;
   setBy?: ID[];
 
-  constructor(name: string, value: boolean, description?: string) {
+  constructor(name: string, slug: string, value?: boolean, description?: string) {
     this.id = crypto.randomUUID();
     this.name = name;
+    this.slug = slug;
     this.description = description;
     this.value = value;
   }
 }
+
+export type SetFlag = Required<Pick<Flag, "id" | "value">>;

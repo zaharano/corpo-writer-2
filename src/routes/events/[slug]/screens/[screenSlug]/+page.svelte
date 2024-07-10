@@ -5,7 +5,7 @@
   import { page } from "$app/stores";
   import { goto } from '$app/navigation';
 
-  import { currentEvent } from "$lib/stores/eventStore";
+  import { currentEvent } from "$lib/stores";
 	import ScreenForm from "$lib/components/eventInputs/screen/screen-form.svelte";
 
   const { slug, screenSlug } = $page.params;
