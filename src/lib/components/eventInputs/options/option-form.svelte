@@ -15,25 +15,18 @@
 </script>
 
 <script lang="ts">
-  // Components
   import { Input } from "$lib/components/ui/input/index.js";
   import * as Form from "$lib/components/ui/form/index.js";
-	import ComboBox from "../comboBox.svelte";
-  import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
+  import { Option } from "$lib/classes/eventClasses";
+	import ScreenComboBox from "../comboBox.svelte";
+  import RequirementsFields, {checkIfRequirements} from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
+	import EffectsFields from "$lib/components/eventInputs/effects/effects-fields.svelte";
+	import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
+	import SuperDebug, { superForm } from "sveltekit-superforms";
+	import { zodClient } from "sveltekit-superforms/adapters";
 	import { Button } from "$lib/components/ui/button";
   import * as Sheet from "$lib/components/ui/sheet";
   import DeleteDialog from "../event/delete-dialog.svelte"; 
-
-  // Classes and Schema
-  import { Option } from "$lib/classes/eventClasses";
-  import RequirementsFields, {checkIfRequirements} from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
-	import EffectsFields from "$lib/components/eventInputs/effects/effects-fields.svelte";
-
-  // Form libs
-	import SuperDebug, { superForm } from "sveltekit-superforms";
-	import { zodClient } from "sveltekit-superforms/adapters";
-
-  // State
 	import { currentEvent } from "$lib/stores";
 
 
@@ -90,7 +83,7 @@
   <Form.Field {form} name="next">
     <Form.Control let:attrs>
       <Form.Label>Next Screen</Form.Label><br>
-      <ComboBox bind:value={$formData.next} purpose='screen' targets={screens} />
+      <ScreenComboBox bind:value={$formData.next} purpose='screen' targets={screens} />
     </Form.Control>
     <Form.Description>
       Select the screen this option leads to.
