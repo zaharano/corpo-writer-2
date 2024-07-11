@@ -86,7 +86,6 @@
     <Form.FormFieldErrors />
   </Form.Field>
 
-  <!-- TODO: bind to what I need -->
   <Form.Field {form} name="next">
     <Form.Control let:attrs>
       <Form.Label>Next Screen</Form.Label><br>
