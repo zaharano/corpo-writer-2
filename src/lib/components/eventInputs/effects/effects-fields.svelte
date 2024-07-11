@@ -1,10 +1,6 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
-
-  export const setFlagSchema = z.object({
-    id: z.string(),
-    value: z.boolean(),
-  });
+  import { setFlagSchema } from "$lib/components/eventInputs/flags/set-flags.svelte";
 
   const gameVFXFormSchema = z.object({
     typeSpeed: z.coerce.number().int().min(1).max(100).optional(),
@@ -56,7 +52,7 @@
   })
 
   export const effectsFormSchema = z.object({
-    setFlags: z.array(z.string()).optional(),
+    setFlags: z.array(setFlagSchema).optional(),
     editEvents: eventChangeSchema.optional(),
   }).merge(gameEffectsFormSchema)
 </script>
