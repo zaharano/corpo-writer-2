@@ -11,11 +11,13 @@
  
   let open = false;
   export let value = "";
-  export let targets: {id: string, name: string}[] = [];
-  export let purpose: 'screen' | 'event' = "screen";
+  export let targets: {id: string, title: string}[] = [];
+  export let purpose: 'screen' | 'event' | 'flag' = "screen";
+  // the below is a hack
+  export let width: string = 'w-full';
  
   $: selectedValue =
-    targets.find((f) => f.id === value)?.name ??
+    targets.find((f) => f.id === value)?.title ??
     `Select a ${purpose}...`;
  
   // We want to refocus the trigger button when the user selects
@@ -42,11 +44,11 @@
       <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
     </Button>
   </Popover.Trigger>
-  <Popover.Content class="w-full p-0">
+  <Popover.Content class={`${width} p-0`}>
     <Command.Root filter={(value, search) => {
       const item = targets.find(item => item.id === value)
        if (!item) return 0
-       if (item.name.toLowerCase().includes(search.toLowerCase()))
+       if (item.title.toLowerCase().includes(search.toLowerCase()))
          return 1
        return 0
      }}>
@@ -67,7 +69,7 @@
                 value !== target.id && "text-transparent"
               )}
             />
-            {target.name}
+            {target.title}
           </Command.Item>
         {/each}
       </Command.Group>

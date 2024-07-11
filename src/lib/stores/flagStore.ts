@@ -22,7 +22,13 @@ export function createFlagStore(init: Flag[] = []) {
 
   const allSimplifiedFlags = () => {
     const flags = get(flagStore);
-    return flags.map((f) => ({id: f.id, name: f.name}));
+    return flags.map((f) => ({id: f.id, title: f.title}));
+  }
+
+  const getFlagTitle = (id: ID) => {
+    const flags = get(flagStore);
+    const flag = flags.find((f) => f.id === id);
+    return flag?.title;
   }
 
   return {
@@ -33,5 +39,6 @@ export function createFlagStore(init: Flag[] = []) {
     addFlag,
     removeFlag,
     allSimplifiedFlags,
+    getFlagTitle,
   }
 }

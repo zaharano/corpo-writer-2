@@ -163,19 +163,19 @@ class GameVFX {
 
 export class Flag {
   readonly id: ID;
-  name: string;
+  title: string;
   slug: string;
   description?: string;
-  value?: boolean;
-  setBy?: ID[];
+  defaultValue?: boolean;
+  setBy?: Record<'event' | 'screen' | 'option', ID>;
 
-  constructor(name: string, slug: string, value?: boolean, description?: string) {
+  constructor(title: string, slug: string, defaultValue?: boolean, description?: string) {
     this.id = crypto.randomUUID();
-    this.name = name;
+    this.title = title;
     this.slug = slug;
     this.description = description;
-    this.value = value;
+    this.defaultValue = defaultValue;
   }
 }
 
-export type SetFlag = Required<Pick<Flag, "id" | "value">>;
+export type SetFlag = { id: ID, value: boolean };

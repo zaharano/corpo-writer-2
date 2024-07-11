@@ -54,7 +54,7 @@ export function createCurrentEventStore(initEvent : Event | null = null) {
 
   const allSimplifiedScreens = () => {
     const event = get(currentEvent);
-    return event.screens.map((s) => ({id: s.id, name: s.title}));
+    return event.screens.map((s) => ({id: s.id, title: s.title}));
   }
 
   const allScreenTitles = () => {

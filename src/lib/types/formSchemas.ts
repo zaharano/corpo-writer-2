@@ -49,7 +49,7 @@ export const newScreenSchema = objWithTitleAndSlugSchema.superRefine((obj, ctx) 
 });
 
 export const newFlagSchema = objWithTitleAndSlugSchema.superRefine((obj, ctx) => {
-  if (flagStore.allSimplifiedFlags().map(f => f.name).includes(obj.title)) {
+  if (flagStore.allSimplifiedFlags().map(f => f.title).includes(obj.title)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: "Title must be unique among flags",
