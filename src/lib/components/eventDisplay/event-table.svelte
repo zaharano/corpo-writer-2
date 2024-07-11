@@ -35,7 +35,7 @@
           }} />
         </Table.Cell>
         <Table.Cell class="text-center">
-          {#if !event.meta.random}
+          {#if event.meta.random}
             <Check class="m-auto"/>
           {/if}
         </Table.Cell>
