@@ -44,7 +44,7 @@
       <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
     </Button>
   </Popover.Trigger>
-  <Popover.Content class={`${width} p-0`}>
+  <Popover.Content class={`${width} max-w-[42rem] p-0`}>
     <Command.Root filter={(value, search) => {
       const item = targets.find(item => item.id === value)
        if (!item) return 0
