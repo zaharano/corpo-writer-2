@@ -31,8 +31,8 @@
     addedFlag = undefined;
   }
 
-  $: flagOptions = flagStore.allSimplifiedFlags().filter(f => !setFlags.map(f => f.id).includes(f.id));
-  // TODO: keep flags in combobox synced with the store
+  $: flagOptions = $flagStore.map((f) => {return {id: f.id, title: f.title}}).filter(f => !setFlags.map(f => f.id).includes(f.id));
+
 </script>
 
 <ComboBox bind:value={addedFlag} purpose='flag' targets={flagOptions}/>
