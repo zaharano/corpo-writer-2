@@ -18,6 +18,7 @@
   import { flagStore } from "$lib/stores";
 
 	import type { ID, SetFlag } from "$lib/classes/eventClasses";
+	import { Separator } from "$lib/components/ui/separator";
 
   export let setFlags: SetFlag[];
 
@@ -25,7 +26,7 @@
   $: addedFlag && addFlag(addedFlag);
 
   function addFlag(add: ID) {
-    setFlags = [...setFlags, { id: add, value: false }];
+    setFlags = [...setFlags, { id: add, value: true }];
     addedFlag = undefined;
   }
 
@@ -35,9 +36,12 @@
 <ComboBox bind:value={addedFlag} purpose='flag' targets={flagStore.allSimplifiedFlags()}/>
 {#if setFlags.length > 0}
   {#each setFlags as flag, i}
+    {#if i > 0}
+      <Separator />
+    {/if}
     <div class='flex items-center gap-x-4'>
-      <span class='flex-grow'>{flagStore.getFlagTitle(flag.id)}</span>
-      <span><Label>True?</Label> <Switch bind:checked={setFlags[i].value} /></span>
+      <span class='flex-grow text-sm font-medium leading-none'>{flagStore.getFlagTitle(flag.id)}</span>
+      <span class='flex items-center gap-2'><Label>True?</Label> <Switch bind:checked={setFlags[i].value} /></span>
       <Button size='icon' variant='ghost' on:click={() => setFlags = setFlags.filter(f => f.id !== flag.id)}><CircleXIcon /></Button>
     </div>
   {/each}
