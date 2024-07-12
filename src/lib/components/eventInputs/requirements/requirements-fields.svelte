@@ -30,19 +30,19 @@
   export let context = "event";
 
   const { form: formData } = form;
-
-  $: console.log($formData.requires.flags);
 </script>
 
-<Form.Field {form} name="flags">
-  <Form.Control let:attrs>
-    <Form.Label>Flags</Form.Label><br>
-    <SetFlags bind:setFlags={$formData.requires.flags} />
-  </Form.Control>
-  <Form.Description>
-    Any flags that must be set for this {context} to be available.
-  </Form.Description>
-  <Form.FormFieldErrors />
-</Form.Field>
+<div class="space-y-6">
+  <Form.Field {form} name="flags">
+    <Form.Control let:attrs>
+      <Form.Label>Flags required</Form.Label><br>
+      <SetFlags bind:setFlags={$formData.requires.flags} />
+    </Form.Control>
+    <Form.Description>
+      Any flags that must be set for this {context} to be available.
+    </Form.Description>
+    <Form.FormFieldErrors />
+  </Form.Field>
 
-<GameRequirementsForm {form} {context} />
+  <GameRequirementsForm {form} {context} />
+</div>

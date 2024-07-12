@@ -70,7 +70,7 @@
 
 <Form.Field {form} name="setFlags">
   <Form.Control let:attrs>
-    <Form.Label>Flags</Form.Label><br>
+    <Form.Label>Flags to set</Form.Label><br>
     <SetFlags bind:setFlags={$formData.effects.setFlags} />
   </Form.Control>
   <Form.Description>
