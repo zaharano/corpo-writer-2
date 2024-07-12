@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
-  import { setFlagSchema } from "$lib/components/eventInputs/flags/set-flags.svelte";
+  import SetFlags, { setFlagSchema } from "$lib/components/eventInputs/flags/set-flags.svelte";
 
   const gameVFXFormSchema = z.object({
     typeSpeed: z.coerce.number().int().min(1).max(100).optional(),
@@ -52,7 +52,7 @@
   })
 
   export const effectsFormSchema = z.object({
-    setFlags: z.array(setFlagSchema).optional(),
+    setFlags: setFlagSchema.optional(),
     editEvents: eventChangeSchema.optional(),
   }).merge(gameEffectsFormSchema)
 </script>
@@ -68,24 +68,15 @@
   const { form: formData } = form;
 </script>
 
-<Form.Field {form} name="addFlags">
+<Form.Field {form} name="setFlags">
   <Form.Control let:attrs>
-    <Form.Label>Add Flags</Form.Label>
-    <Input placeholder="flag1, flag2, flag3" {...attrs} bind:value={$formData.effects.addFlags} />
+    <Form.Label>Flags</Form.Label><br>
+    <SetFlags bind:setFlags={$formData.effects.setFlags} />
   </Form.Control>
   <Form.Description>
-    Selecting this option will add these flags. Separate flags with commas.
+    Any flags that this are set as part of this set of effects.
   </Form.Description>
-</Form.Field>
-
-<Form.Field {form} name="removeFlags">
-  <Form.Control let:attrs>
-    <Form.Label>Remove Flags</Form.Label>
-    <Input placeholder="flag1, flag2, flag3" {...attrs} bind:value={$formData.effects.removeFlags} />
-  </Form.Control>
-  <Form.Description>
-    Selecting this option will remove these flags. Separate flags with commas.
-  </Form.Description>
+  <Form.FormFieldErrors />
 </Form.Field>
 
 <Separator />
