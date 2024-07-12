@@ -22,6 +22,7 @@
   import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
 	import { Button } from "$lib/components/ui/button";
   import * as Sheet from "$lib/components/ui/sheet";
+  import * as Accordion from "$lib/components/ui/accordion";
   import DeleteDialog from "../event/delete-dialog.svelte"; 
 
   // Classes and Schema
@@ -99,18 +100,32 @@
 
   <!-- upon toggling off these sections, the data should be cleared -->
    <!-- if data exists in these sections, the toggle should be on -->
-  <ToggleSection toggle={reqs}>
-    <span slot='label'>Requirements</span>
-    <span slot='description'>Does this option have requirements? Flags or other game state.</span>
-    <RequirementsFields slot='toggled' {form} context='option'/>
-  </ToggleSection>
 
-  <ToggleSection>
-    <span slot='label'>Effects</span>
-    <span slot='description'>Does the player choosing this option cause effects?<br>(Set flags, or change the game state)</span>
-    <EffectsFields slot='toggled' {form}/>
-  </ToggleSection>
-
+   <Accordion.Root>
+    <Accordion.Item value="item-1">
+      <Accordion.Trigger>
+        Requirements
+      </Accordion.Trigger>
+      <Form.Description class='mb-2'>
+        Does this option have requirements? Flags or other game state.
+      </Form.Description>
+      <Accordion.Content>
+        <RequirementsFields {form} context='option'/>
+      </Accordion.Content>
+    </Accordion.Item>
+    <Accordion.Item value="item-2">
+      <Accordion.Trigger>
+        Effects
+      </Accordion.Trigger>
+      <Form.Description class='mb-2'>
+        Does the player choosing this option cause effects?<br>(Set flags, or change the game state)
+      </Form.Description>
+      <Accordion.Content>
+        <EffectsFields {form}/>
+      </Accordion.Content>
+    </Accordion.Item>
+  </Accordion.Root>
+  
   <Sheet.Close class='w-full'>
     <Button class='mt-4 w-full' disabled={!valid} on:click={() => {
       if (!optionFormSchema.safeParse($formData).success) {
