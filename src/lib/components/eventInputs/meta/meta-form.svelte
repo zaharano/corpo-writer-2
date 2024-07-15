@@ -42,12 +42,26 @@
 
 	const { form: formData, enhance } = form;
 
+
+  // replace saveMeta? 
+  // const form = superForm(data, {
+  //   validators: zodClient(formSchema),
+  //   onUpdated: ({ form: f }) => {
+  //     if (f.valid) {
+  //       toast.success(`You submitted ${JSON.stringify(f.data, null, 2)}`);
+  //     } else {
+  //       toast.error("Please fix the errors in the form.");
+  //     }
+  //   }
+  // });
+
   // TODO: Generalize this to use elsewhere autosave to currentEvent
   let saveTimer: ReturnType<typeof setTimeout>;
   function saveMeta() {
     clearTimeout(saveTimer);
     tick().then(() => {
       saveTimer = setTimeout(() => {
+        console.log(metaFormSchema.safeParse($formData));
         if (metaFormSchema.safeParse($formData).success) {
           let ce = $currentEvent;
           ce.meta = { ...ce.meta, ...$formData};
