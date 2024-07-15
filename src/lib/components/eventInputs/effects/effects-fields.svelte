@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	import { z } from "zod";
   import SetFlags, { setFlagSchema } from "$lib/components/eventInputs/flags/set-flags.svelte";
+  import { addEventSchema, eventListSchema } from "$lib/components/eventInputs/event/schedule-event.svelte";
 
   const gameVFXFormSchema = z.object({
     typeSpeed: z.coerce.number().int().min(1).max(100).optional(),
@@ -19,34 +20,9 @@
     promotion: z.string().optional(),
     demotion: z.string().optional(),
   })
-
-  const addEventSchema = z.object({
-    event: z.string(),
-    time: z.coerce.number().int().min(0).max(50),
-  }).superRefine((obj, ctx) => {
-    // rewrite this to check that event exists.
-    if (obj.event === "schedule" && obj.time === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Time must be greater than 0",
-      })
-    }
-  })
-
-  const eventListSchema = z.array(z.string()).superRefine((obj, ctx) => {
-    // rewrite to check that all events exist
-    if (false) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Attempting to lock/unlock an event that doesn't exist",
-      })
-    }
-  })
   
-  const scheduleEventSchema = z.array(addEventSchema)
-
   const eventChangeSchema = z.object({
-    schedule: scheduleEventSchema.optional(),
+    schedule: z.array(addEventSchema).optional(),
     lock: eventListSchema.optional(),
     unlock: eventListSchema.optional(),
   })
