@@ -1,3 +1,5 @@
+<!-- TODO: This combobox isn't properly integrated into the form even though it can be. Look at docs for how to use Form.Control, attrs, and hidden input to set up correctly. -->
+
 <script lang="ts">
   import Check from "lucide-svelte/icons/check";
   import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
