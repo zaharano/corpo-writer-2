@@ -18,6 +18,7 @@
   import { cn } from "$lib/utils";
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+	import { fade } from "svelte/transition";
 
   export let purpose: 'event' | 'screen' | 'flag' = 'event';
   export let stub: boolean = false;
@@ -27,7 +28,7 @@
     event: 'Add a new event to the game.',
     screen: 'Add a new screen to the current event.',
     flag: 'Add a new flag to the game.',
-  }[purpose] + stub ? `This stub ${purpose} will be available to flesh out later - for now just enter a title and slug to point to.` : '';
+  }[purpose] + (stub ? ` This stub ${purpose} will be available to flesh out later - for now just enter a title and slug to point to.` : '');
   const schema = {
     event: newEventSchema,
     screen: newScreenSchema,
