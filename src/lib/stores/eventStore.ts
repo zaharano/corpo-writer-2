@@ -59,6 +59,12 @@ export function createEventStore(init : Event[] = []) {
     return events.find((e) => e.id === id);
   }
 
+  const getEventTitle = (id: ID) => {
+    const events = get(eventStore);
+    const event = events.find((e) => e.id === id);
+    return event?.meta.title;
+  }
+
   const allSimplifiedEvents = () => {
     // const events = get(eventStore);
     // return events.map((e) => ({id: e.id, name: e.meta.title}));
@@ -85,6 +91,7 @@ export function createEventStore(init : Event[] = []) {
     load,
     getEventBySlug,
     getEventById,
+    getEventTitle,
     allEventNames,
     allEventSlugs,
     allSimplifiedEvents,
