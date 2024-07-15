@@ -2,7 +2,7 @@
   import { z } from 'zod';
 
   export const setFlagSchema = z.array(z.object({
-    id: z.string(),
+    id: z.string().uuid(),
     value: z.boolean(),
   }));
 </script>
