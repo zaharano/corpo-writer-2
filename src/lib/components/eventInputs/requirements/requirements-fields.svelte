@@ -13,12 +13,6 @@
 	});
 
   type Requirements = z.infer<typeof requires>;
-
-  // this type Requirements isn't working because of schema vs class differences
-  export function checkIfRequirements(obj: Requirements | undefined) {
-    if (!obj) return false;
-    return obj.flags.length > 0 || checkIfGameRequirements(obj.gameReqs);
-  }
 </script>
 
 <script lang="ts">
