@@ -19,16 +19,14 @@
   import { Input } from "$lib/components/ui/input/index.js";
   import * as Form from "$lib/components/ui/form/index.js";
 	import ComboBox from "../comboBox.svelte";
-  import ToggleSection from "$lib/components/ui/toggle-section/toggle-section.svelte";
 	import { Button } from "$lib/components/ui/button";
   import * as Sheet from "$lib/components/ui/sheet";
   import * as Accordion from "$lib/components/ui/accordion";
-  import * as RadioGroup from "$lib/components/ui/radio-group/index.js";
   import DeleteDialog from "../event/delete-dialog.svelte"; 
 
   // Classes and Schema
   import { Option } from "$lib/classes/eventClasses";
-  import RequirementsFields, {checkIfRequirements} from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
+  import RequirementsFields from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
 	import EffectsFields from "$lib/components/eventInputs/effects/effects-fields.svelte";
 
   // Form libs
@@ -62,17 +60,12 @@
       valid = false;
     }
   }
-  // save changes directly to current event object
+
+  // save changes directly to current event object?
   formData.subscribe((value) => {
     // console.log(value);
   });
 
-  let reqs = checkIfRequirements($formData.requires);
-
-  // let screens = currentEvent.allSimplifiedScreens();
-  // currentEvent.subscribe((_) => {
-  //   screens = currentEvent.allSimplifiedScreens();
-  // });
   $: screens = [
     { id: 'endEvent', title: 'End the current event' },
     { id: 'endGame', title: 'End the game (game over man!)' },
@@ -103,41 +96,7 @@
     <Form.FormFieldErrors />
   </Form.Field>
 
-  <!-- <Form.Fieldset {form} name="next" class="space-y-3">
-    <Form.Legend>Outcome</Form.Legend>
-    <RadioGroup.Root
-      bind:value={$formData.next}
-      class="flex flex-col space-y-1"
-    >
-      <div class="flex items-center space-x-3 space-y-0">
-        <Form.Control let:attrs>
-          <RadioGroup.Item value="next" {...attrs} />
-          <Form.Label class="font-normal">All new messages</Form.Label>
-        </Form.Control>
-      </div>
-      <div class="flex items-center space-x-3 space-y-0">
-        <Form.Control let:attrs>
-          <RadioGroup.Item value="endEvent" {...attrs} />
-          <Form.Label class="font-normal"
-            >End the current event</Form.Label
-          >
-        </Form.Control>
-      </div>
-      <div class="flex items-center space-x-3 space-y-0">
-        <Form.Control let:attrs>
-          <RadioGroup.Item value="endGame" {...attrs} />
-          <Form.Label class="font-normal">End the game (game over man!)</Form.Label>
-        </Form.Control>
-      </div>
-      <RadioGroup.Input name="next" />
-    </RadioGroup.Root>
-    <Form.FieldErrors />
-  </Form.Fieldset> -->
-
-  <!-- upon toggling off these sections, the data should be cleared -->
-   <!-- if data exists in these sections, the toggle should be on -->
-
-   <Accordion.Root>
+  <Accordion.Root>
     <Accordion.Item value="item-1">
       <Accordion.Trigger>
         Requirements
