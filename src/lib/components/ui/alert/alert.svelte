@@ -2,6 +2,7 @@
 	import type { HTMLAttributes } from "svelte/elements";
 	import { type Variant, alertVariants } from "./index.js";
 	import { cn } from "$lib/utils.js";
+	import { fade, slide } from "svelte/transition";
 
 	type $$Props = HTMLAttributes<HTMLDivElement> & {
 		variant?: Variant;
@@ -12,6 +13,6 @@
 	export { className as class };
 </script>
 
-<div class={cn(alertVariants({ variant }), className)} {...$$restProps} role="alert">
+<div class={cn(alertVariants({ variant }), className)} {...$$restProps} role="alert" transition:slide>
 	<slot />
 </div>
