@@ -1,3 +1,5 @@
+<!-- abandoned for accordion -->
+
 <script lang="ts">
   import { Switch } from "$lib/components/ui/switch";
   import { Separator } from "$lib/components/ui/separator/index";
