@@ -38,78 +38,61 @@
   import * as Form from "$lib/components/ui/form/index.js";
   import { Separator } from "$lib/components/ui/separator/index";
 	import { Button } from "$lib/components/ui/button";
+	import ScheduleEvent from "../event/schedule-event.svelte";
 
   export let form;
 
   const { form: formData } = form;
 </script>
 
-<Form.Field {form} name="setFlags">
-  <Form.Control let:attrs>
-    <Form.Label>Flags to set</Form.Label><br>
-    <SetFlags bind:setFlags={$formData.effects.setFlags} />
-  </Form.Control>
-  <Form.Description>
-    Any flags that this are set as part of this set of effects.
-  </Form.Description>
-  <Form.FormFieldErrors />
-</Form.Field>
-
-<Separator />
-
-<!-- schedule events
-remove from schedule (less important rn)
-lock event (remove from pool by ID)
-unlock event (add to pool by ID) -->
-
-{#each $formData.effects.editEvents.schedule as event, i}
-  <Form.Field {form} name="event">
+<div class="space-y-6">
+  <Form.Field {form} name="setFlags">
     <Form.Control let:attrs>
-      <Form.Label>Event</Form.Label>
-      <Input placeholder="event1" {...attrs} bind:value={event.event} />
+      <Form.Label>Flags to set</Form.Label><br>
+      <SetFlags bind:setFlags={$formData.effects.setFlags} />
     </Form.Control>
     <Form.Description>
-      Select the event to schedule. THIS MUST BECOME AN EVENT COMBOBOX.
+      Any flags that this are set as part of this set of effects.
     </Form.Description>
+    <Form.FormFieldErrors />
   </Form.Field>
-
-  <Form.Field {form} name="time">
-    <Form.Control let:attrs>
-      <Form.Label>Time</Form.Label>
-      <Input type="number" placeholder="1" {...attrs} bind:value={event.time} />
-    </Form.Control>
-    <Form.Description>
-      Select number of turns in the future the event is to be scheduled for (setting to 1 will attempt to schedule the event for the next turn). If there is already an event scheduled for the specified time, the event with higher priority will retain that time slot and the other will be rescheduled for the next available time.
-    </Form.Description>
-  </Form.Field>
-
-  <Button on:click={() => $formData.effects.editEvents.schedule.splice(i, 1)}>Remove</Button>
 
   <Separator />
-{/each}
-<Button on:click={() => $formData.effects.editEvents.schedule.push({ event: "", time: 0 })}>Add Event</Button>
 
-<Separator />
+  <!-- schedule events
+  remove from schedule (less important rn)
+  lock event (remove from pool by ID)
+  unlock event (add to pool by ID) -->
 
-<Form.Field {form} name="lock">
-  <Form.Control let:attrs>
-    <Form.Label>Lock Event</Form.Label>
-    <Input placeholder="event1" {...attrs} bind:value={$formData.effects.editEvents.lock} />
-  </Form.Control>
-  <Form.Description>
-    Select the event to lock. THIS MUST BECOME AN EVENT COMBOBOX.
-  </Form.Description>
-</Form.Field>
+  <Form.Field {form} name="schedule">
+    <Form.Control let:attrs>
+      <Form.Label>Schedule Events</Form.Label>
+      <ScheduleEvent bind:scheduledEvents={$formData.effects.editEvents.schedule} />
+    </Form.Control>
+    <Form.Description>
+      Add specific events to the schedule. The time is the number of other events the player will see before the scheduled event (setting to 1 will attempt to schedule the event next). If there is already an event scheduled for the specified time, the event with higher priority will take that time slot and the other will be rescheduled for the next available time.
+    </Form.Description>
+  </Form.Field>
 
-<Form.Field {form} name="unlock">
-  <Form.Control let:attrs>
-    <Form.Label>Unlock Event</Form.Label>
-    <Input placeholder="event1" {...attrs} bind:value={$formData.effects.editEvents.unlock} />
-  </Form.Control>
-  <Form.Description>
-    Select the event to unlock. THIS MUST BECOME AN EVENT COMBOBOX.
-  </Form.Description>
-</Form.Field>
+  <Separator />
 
-<!-- add event stuff -->
- <!-- make subforms work off {form} prop -->
+  <Form.Field {form} name="unlock">
+    <Form.Control let:attrs>
+      <Form.Label>Unlock Event</Form.Label>
+      <Input placeholder="event1" {...attrs} bind:value={$formData.effects.editEvents.unlock} />
+    </Form.Control>
+    <Form.Description>
+      Select the event to unlock. THIS MUST BECOME AN EVENT COMBOBOX.
+    </Form.Description>
+  </Form.Field>
+
+  <Form.Field {form} name="lock">
+    <Form.Control let:attrs>
+      <Form.Label>Lock Event</Form.Label>
+      <Input placeholder="event1" {...attrs} bind:value={$formData.effects.editEvents.lock} />
+    </Form.Control>
+    <Form.Description>
+      Select the event to lock. THIS MUST BECOME AN EVENT COMBOBOX.
+    </Form.Description>
+  </Form.Field>
+</div>
