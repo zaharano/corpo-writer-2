@@ -109,13 +109,13 @@ export class Effects {
 
 class EventChanges {
   schedule: {
-    event: string;
+    id: string;
     time: number;
   }[];
   lock: string[];
   unlock: string[];
 
-  constructor(schedule: { event: string, time: number }[] = [], lock: string[] = [], unlock: string[] = []) {
+  constructor(schedule: { id: string, time: number }[] = [], lock: string[] = [], unlock: string[] = []) {
     this.schedule = schedule;
     this.lock = lock;
     this.unlock = unlock;
