@@ -109,13 +109,13 @@ export class Effects {
 
 class EventChanges {
   schedule: {
-    id: string;
+    id: ID;
     time: number;
   }[];
-  lock: string[];
-  unlock: string[];
+  lock: ID[];
+  unlock: ID[];
 
-  constructor(schedule: { id: string, time: number }[] = [], lock: string[] = [], unlock: string[] = []) {
+  constructor(schedule: { id: ID, time: number }[] = [], lock: ID[] = [], unlock: ID[] = []) {
     this.schedule = schedule;
     this.lock = lock;
     this.unlock = unlock;
@@ -149,7 +149,11 @@ class GameEffects {
   newDepartment?: string | 'auto';
   promotion?: string | 'auto';
   demotion?: string | 'auto';
-  VFX?: GameVFX;
+  VFX: GameVFX;
+
+  constructor() {
+    this.VFX = new GameVFX();
+  }
 }
 
 class GameVFX {
