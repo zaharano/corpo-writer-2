@@ -35,12 +35,26 @@
 	import Heading from "$lib/components/ui/typography/heading.svelte";
 
   const form = superForm( { ...$currentEvent.meta }, {
+    SPA: true,
     dataType: 'json',
     //@ts-ignore - same old thing
 		validators: zodClient(metaFormSchema),
+    // onUpdate: ({ form: f }) => {
+    //   console.log(f.valid);
+    //   if (f.valid) {
+    //     currentEvent.update((ce) => {
+    //       return { ...ce, meta: { ...ce.meta, ...$formData} };
+    //     })
+    //     valid.set(true);
+    //   } else {
+    //     valid.set(false);
+    //   }
+    // }
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, validateForm } = form;
+  // immediately validate the loaded data
+  validateForm({ update: true});
 
 
   // replace saveMeta? 
@@ -73,6 +87,7 @@
       }, 50);
     });
   }
+
 
   // function handleAutoSave(currentEvent: Event, editing: any, schema: any, data: any, timer: ReturnType<typeof setTimeout>) {
   //   clearTimeout(timer);
@@ -110,7 +125,7 @@
   let aRarity = [$formData.rarity];
 </script>
 
-<form method="POST" class="mt-8 space-y-8" id="meta-form" use:enhance on:change={saveMeta}>
+<form method="POST" class="mt-8 space-y-8" id="meta-form" use:enhance on:input={saveMeta}>
 	<Form.Field {form} name="title">
 		<Form.Control let:attrs>
 			<Form.Label>Title</Form.Label>
@@ -161,7 +176,6 @@
         {...attrs} 
         bind:checked={$formData.random}
         on:click={saveMeta}
-        
       />
     </Form.Control>
     <Form.Description>
