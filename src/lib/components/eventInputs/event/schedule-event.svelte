@@ -40,31 +40,34 @@
   } // z.infer does not produce formatted uuid string type
   
 
-  export let scheduledEvents: AddEventType[];
+  export let selectedEvents: AddEventType[];
+  export let noSchedule = false;
 
   let eventToAdd: ID | undefined = undefined;
   $: eventToAdd && addEvent(eventToAdd);
 
   function addEvent(add: ID) {
-    scheduledEvents = [...scheduledEvents, { id: add, time: 1 }];
+    selectedEvents = [...selectedEvents, { id: add, time: 1 }];
     eventToAdd = undefined;
   }
 
-  $: eventOptions = $eventStore.map((e) => {return {id: e.id, title: e.meta.title}}).filter(e => !scheduledEvents.map(e => e.id).includes(e.id));
+  $: eventOptions = $eventStore.map((e) => {return {id: e.id, title: e.meta.title}}).filter(e => !selectedEvents.map(e => e.id).includes(e.id));
 
 </script>
 
 <ComboBox bind:value={eventToAdd} purpose='event' targets={eventOptions}/>
-{#if scheduledEvents.length > 0}
+{#if selectedEvents.length > 0}
   <div transition:slide>
-    {#each scheduledEvents as event, i (event.id)}
+    {#each selectedEvents as event, i (event.id)}
       {#if i > 0}
         <Separator />
       {/if}
       <div transition:slide class='flex items-center gap-x-4'>
         <span class='flex-grow text-sm font-medium leading-none'>{eventStore.getEventTitle(event.id)}</span>
-        <span class='flex items-center gap-2'><Label>Time</Label>Number input here.</span>
-        <Button size='icon' variant='ghost' on:click={() => scheduledEvents = scheduledEvents.filter(e => e.id !== event.id)}><CircleXIcon /></Button>
+        {#if !noSchedule}
+          <span class='flex items-center gap-2'><Label>Time</Label> <input type='number' min='1' max='50' class='w-12' bind:value={selectedEvents[i].time} /></span>
+        {/if}
+        <Button size='icon' variant='ghost' on:click={() => selectedEvents = selectedEvents.filter(e => e.id !== event.id)}><CircleXIcon /></Button>
       </div>
     {/each}
   </div>
