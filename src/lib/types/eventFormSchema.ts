@@ -1,4 +1,5 @@
 // unused one-form schema
+// create validation that just checks all this?
 
 import { z } from 'zod';
 import { type SuperForm, type Infer } from 'sveltekit-superforms';
