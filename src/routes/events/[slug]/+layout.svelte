@@ -63,6 +63,10 @@
 			title: "Screens",
 			href: `/events/${slug}/screens`,
 		},
+		{
+			title: "Validation",
+			href: `/events/${slug}/validation`,
+		},
 	];
 </script>
  
@@ -81,9 +85,9 @@
 			{/if}
       <div class="flex flex-col gap-4 p-4">
         <div>
-          <Button disabled={!$valid} class="w-full" variant="default" on:click={save}>{buttonText}</Button>
+          <Button class="w-full" variant="default" on:click={save}>{buttonText}</Button>
           {#if $valid === false}
-            <p class="text-destructive text-xs text-center">All errors must be fixed.</p>
+            <p class="text-destructive text-xs text-center">Errors were logged. Event is not valid until all errors are addressed.</p>
           {/if}
         </div>
 				{#if !$page.params.screenSlug}
