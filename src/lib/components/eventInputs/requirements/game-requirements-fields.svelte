@@ -20,10 +20,6 @@
 
   export type ObjWithGameRequirements = typeof objWithGameRequirements;
   type GameRequirements = z.infer<typeof gameRequirements>;
-
-  export function checkIfGameRequirements(obj: GameRequirements) {
-    return !!(obj?.minLevel || obj?.maxLevel);
-  }
 </script>
 
 <script lang="ts">
@@ -36,7 +32,7 @@
   const { form: formData } = form;
 </script>
 
-<Form.Field {form} name="minLevel">
+<Form.Field {form} name="requires.gameReqs.minLevel">
   <Form.Control let:attrs>
     <Form.Label>Min Level</Form.Label>
     <Input type="number" {...attrs} bind:value={$formData.requires.gameReqs.minLevel}/>
@@ -47,7 +43,7 @@
   <Form.FieldErrors />
 </Form.Field>
 
-<Form.Field {form} name="maxLevel">
+<Form.Field {form} name="requires.gameReqs.maxLevel">
   <Form.Control let:attrs>
     <Form.Label>Max Level</Form.Label>
     <Input type="number" {...attrs} bind:value={$formData.requires.gameReqs.maxLevel}/>
