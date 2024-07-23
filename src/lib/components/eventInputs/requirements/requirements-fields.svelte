@@ -1,7 +1,7 @@
 
 <script lang="ts" context="module">
 	import { z } from "zod";
-  import { objWithGameRequirements, checkIfGameRequirements } from "./game-requirements-fields.svelte";
+  import { objWithGameRequirements } from "./game-requirements-fields.svelte";
   import { setFlagSchema } from "$lib/components/eventInputs/flags/set-flags.svelte";
 
   const requires = objWithGameRequirements.extend({
@@ -27,7 +27,7 @@
 </script>
 
 <div class="space-y-6">
-  <Form.Field {form} name="flags">
+  <Form.Field {form} name="requires.flags">
     <Form.Control let:attrs>
       <Form.Label>Flags required</Form.Label><br>
       <SetFlags bind:setFlags={$formData.requires.flags} />
