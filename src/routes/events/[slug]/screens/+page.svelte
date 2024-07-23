@@ -12,5 +12,5 @@
   </div>
   <Separator />
   <ScreenTable />
-  <NewThingDialog purpose="screen" variant="secondary"/>
+  <NewThingDialog purpose="screen" />
 </div>

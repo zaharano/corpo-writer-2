@@ -1,8 +1,8 @@
-
 <script lang="ts" context="module">
 	import { z } from "zod";
   import { objWithRequirements } from "$lib/components/eventInputs/requirements/requirements-fields.svelte";
   import { newEventSchema } from "$lib/types/formSchemas";
+  import type { EventFormSchema } from "$lib/types/eventFormSchema";
 
   const partialSchema = objWithRequirements.merge(newEventSchema.innerType());
   export const metaFormSchema = partialSchema.extend({
@@ -10,14 +10,12 @@
     random: z.boolean(),
     priority: z.number().int().min(0).max(100),
     rarity: z.number().int().min(0).max(100),
-  })
+  });
 
-  // vestigial?
-	// export type MetaFormSchema = typeof metaFormSchema;
 </script>
 
 <script lang='ts'>
-  import { superForm } from "sveltekit-superforms";
+  import { superForm, type Infer, type SuperForm } from "sveltekit-superforms";
 	import SuperDebug from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
   import { Switch } from "$lib/components/ui/switch/index.js";
@@ -31,31 +29,12 @@
 
   import { currentEvent } from "$lib/stores";
   import { valid } from "$lib/stores";
-	import { tick } from "svelte";
+	import { getContext, tick } from "svelte";
 	import Heading from "$lib/components/ui/typography/heading.svelte";
 
-  const form = superForm( { ...$currentEvent.meta }, {
-    SPA: true,
-    dataType: 'json',
-    //@ts-ignore - same old thing
-		validators: zodClient(metaFormSchema),
-    // onUpdate: ({ form: f }) => {
-    //   console.log(f.valid);
-    //   if (f.valid) {
-    //     currentEvent.update((ce) => {
-    //       return { ...ce, meta: { ...ce.meta, ...$formData} };
-    //     })
-    //     valid.set(true);
-    //   } else {
-    //     valid.set(false);
-    //   }
-    // }
-	});
+  let form : SuperForm<Infer<EventFormSchema>> = getContext('form');
 
-	const { form: formData, enhance, validateForm } = form;
-  // immediately validate the loaded data
-  validateForm({ update: true});
-
+	const { form: formData } = form;
 
   // replace saveMeta? 
   // const form = superForm(data, {
@@ -70,23 +49,23 @@
   // });
 
   // TODO: Generalize this to use elsewhere autosave to currentEvent
-  let saveTimer: ReturnType<typeof setTimeout>;
-  function saveMeta() {
-    clearTimeout(saveTimer);
-    tick().then(() => {
-      saveTimer = setTimeout(() => {
-        console.log(metaFormSchema.safeParse($formData));
-        if (metaFormSchema.safeParse($formData).success) {
-          let ce = $currentEvent;
-          ce.meta = { ...ce.meta, ...$formData};
-          currentEvent.set(ce);
-          valid.set(true);
-        } else {
-          valid.set(false);
-        }
-      }, 50);
-    });
-  }
+  // let saveTimer: ReturnType<typeof setTimeout>;
+  // function saveMeta() {
+  //   clearTimeout(saveTimer);
+  //   tick().then(() => {
+  //     saveTimer = setTimeout(() => {
+  //       console.log(metaFormSchema.safeParse($formData));
+  //       if (metaFormSchema.safeParse($formData).success) {
+  //         let ce = $currentEvent;
+  //         ce.meta = { ...ce.meta, ...$formData};
+  //         currentEvent.set(ce);
+  //         valid.set(true);
+  //       } else {
+  //         valid.set(false);
+  //       }
+  //     }, 50);
+  //   });
+  // }
 
 
   // function handleAutoSave(currentEvent: Event, editing: any, schema: any, data: any, timer: ReturnType<typeof setTimeout>) {
@@ -106,30 +85,31 @@
   // }
 
   function slugGen() {
-    if ($formData.title && !$formData.slug) {
-      $formData.slug = $formData.title.toLowerCase().replace(/\s/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-{2,}/g,'-').slice(0, 30);
+    if ($formData.meta.title && !$formData.meta.slug) {
+      $formData.meta.slug = $formData.meta.title.toLowerCase().replace(/\s/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-{2,}/g,'-').slice(0, 30);
     }
   }
 
+
   function handleSlider() {
     tick().then(() => {
-      $formData.priority = aPriority[0]
-      $formData.rarity = aRarity[0];
-      saveMeta();
+      $formData.meta.priority = aPriority[0]
+      $formData.meta.rarity = aRarity[0];
+      // saveMeta();
     });
   }
 
   // these workarounds because slider uses [number] and not number
   // also, now odd with the value being close but not the same -
-  let aPriority = [$formData.priority];
-  let aRarity = [$formData.rarity];
+  let aPriority = [$formData.meta.priority];
+  let aRarity = [$formData.meta.rarity];
 </script>
 
-<form method="POST" class="mt-8 space-y-8" id="meta-form" use:enhance on:input={saveMeta}>
-	<Form.Field {form} name="title">
+<div class="space-y-8">
+	<Form.Field {form} name="meta.title">
 		<Form.Control let:attrs>
 			<Form.Label>Title</Form.Label>
-			<Input placeholder="A Shortcut to Mushrooms" {...attrs} bind:value={$formData.title} />
+			<Input placeholder="A Shortcut to Mushrooms" {...attrs} bind:value={$formData.meta.title} />
 		</Form.Control>
 		<Form.Description>
 			The title for this event.
@@ -137,13 +117,13 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-  <Form.Field {form} name="slug">
+  <Form.Field {form} name="meta.slug">
     <Form.Control let:attrs>
       <Form.Label>Slug</Form.Label>
       <Input 
         placeholder="a-shortcut-to-mushrooms" 
         {...attrs} 
-        bind:value={$formData.slug} 
+        bind:value={$formData.meta.slug} 
         on:focus={slugGen} 
         on:blur={slugGen} 
       />
@@ -154,13 +134,13 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <Form.Field {form} name="repeatable">
+  
+  <Form.Field {form} name="meta.repeatable">
     <Form.Control let:attrs>
       <Form.Label>Repeatable</Form.Label>
       <Switch 
         {...attrs} 
-        bind:checked={$formData.repeatable}
-        on:click={saveMeta}
+        bind:checked={$formData.meta.repeatable}
       />
     </Form.Control>
     <Form.Description>
@@ -169,13 +149,12 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <Form.Field {form} name="random">
+  <Form.Field {form} name="meta.random">
     <Form.Control let:attrs>
       <Form.Label>Random</Form.Label>
       <Switch 
         {...attrs} 
-        bind:checked={$formData.random}
-        on:click={saveMeta}
+        bind:checked={$formData.meta.random}
       />
     </Form.Control>
     <Form.Description>
@@ -184,7 +163,7 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <Form.Field {form} name="priority" on:click={handleSlider}>
+  <Form.Field {form} name="meta.priority" on:click={handleSlider}>
     <Form.Control let:attrs>
       <Form.Label>Priority</Form.Label> <span>{aPriority}</span>
       <Slider 
@@ -201,7 +180,7 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <Form.Field {form} name="rarity" on:click={handleSlider}>
+  <Form.Field {form} name="meta.rarity" on:click={handleSlider}>
     <Form.Control let:attrs>
       <Form.Label>Rarity</Form.Label> <span>{aRarity}</span>
       <Slider 
@@ -224,9 +203,8 @@
     <p class="text-sm text-muted-foreground">Does this event have requirements to be available?</p>
   </div>
 
-  <RequirementsForm form={form} context='event'/>
-
-</form>
+  <RequirementsForm {form} context='event'/>
+</div>
 
 {#if browser}
 	<SuperDebug data={$formData} />

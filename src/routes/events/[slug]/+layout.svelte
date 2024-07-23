@@ -1,3 +1,5 @@
+
+
 <script lang="ts">
 	import SidebarNav from "$lib/components/ui/nav/sidebarnav.svelte";
 	import { Separator } from "$lib/components/ui/separator/index.js";
@@ -6,6 +8,12 @@
 	import { goto } from "$app/navigation";
 	import { Button } from "$lib/components/ui/button/index";
 	import DeleteDialog from "$lib/components/eventInputs/event/delete-dialog.svelte";
+	import { zodClient } from "sveltekit-superforms/adapters";
+	import { superForm } from "sveltekit-superforms";
+	import { eventFormSchema } from "$lib/types/eventFormSchema";
+
+	import { setContext } from 'svelte';
+
 
   const slug = $page.params.slug;
 	let screenSlug: string | undefined;
@@ -24,6 +32,7 @@
     currentEvent.load(ce);
   }
 
+	// set primary button text based on if a screen is open
 	$: buttonText = screenSlug ? 'Back (changes auto-saved)' : 'Save Event';
 
   function save() {
@@ -31,9 +40,9 @@
 			// screen is constantly auto-saved to currentEvent - 
 			// perhaps this should change to work like the event level save
 		} else {
-    	currentEvent.save();
+    	form.submit()
 		}
-    back();
+    // back();
   }
 
 	function back() {
@@ -64,6 +73,37 @@
 			href: `/events/${slug}/screens`,
 		},
 	];
+
+	const form = superForm( {...$currentEvent}, {
+		SPA: true,
+		dataType: 'json',
+		validators: zodClient(eventFormSchema),
+		onInput: () => {
+			console.log('input');
+		},
+		// Yes we save invalid data, and set the valid flag to false
+		// and save the errors to be reviewable.
+		onUpdate: ({ form: f }) => {
+			console.log(f.errors)
+			if (f.valid) {
+				valid.set(true);
+				f.data.writerMeta.valid = true;
+				f.data.writerMeta.errors = undefined;
+			} else {
+				valid.set(false);
+				f.data.writerMeta.valid = false;
+				f.data.writerMeta.errors = f.errors;
+			}
+			currentEvent.set(f.data);
+			currentEvent.save();
+		},
+	});
+
+	const { form: formData, enhance, validateForm } = form;
+  // immediately validate the loaded data
+  validateForm({ update: true});
+
+	setContext('form', form);
 </script>
  
 <div class="space-y-6 p-10 pb-16">
@@ -81,19 +121,21 @@
 			{/if}
       <div class="flex flex-col gap-4 p-4">
         <div>
-          <Button disabled={!$valid} class="w-full" variant="default" on:click={save}>{buttonText}</Button>
-          {#if $valid === false}
-            <p class="text-destructive text-xs text-center">All errors must be fixed.</p>
-          {/if}
+          <Button class="w-full" variant="default" on:click={save}>{buttonText}</Button>
         </div>
 				{#if !$page.params.screenSlug}
         	<Button class="w-full" variant="secondary" on:click={back}>Back (without save)</Button>
 				{/if}
 				<DeleteDialog class="w-full" handleDelete={del} />
+				{#if $valid === false}
+				<p class="text-destructive text-xs text-center">Errors were logged. Event is not valid until all errors are addressed.</p>
+				{/if}
       </div>
 		</aside>
 		<div class="flex-1 lg:max-w-2xl">
-			<slot />
+			<form method="POST" class="mt-8 space-y-8" id="meta-form" use:enhance on:input={() => validateForm({ update: true })}>
+				<slot />
+			</form>
 		</div>
 	</div>
 </div>

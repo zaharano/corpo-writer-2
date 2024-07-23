@@ -1,6 +1,9 @@
 // I think these could be written as extensions of types inferred from zod schemas
 // TODO: refactor to use zod schemas
 
+import type { ValidationErrors, Infer, SuperForm } from "sveltekit-superforms";
+import type { EventFormSchema } from "$lib/types/eventFormSchema";
+
 export type ID = ReturnType<typeof crypto.randomUUID>;
 
 export class Event {
@@ -50,9 +53,12 @@ export class EventMeta {
 class WriterMeta {
   status: Status;
   notes?: string;
+  valid: boolean;
+  errors?: ValidationErrors<SuperForm<Infer<EventFormSchema>>>;
 
   constructor() {
     this.status = 'draft';
+    this.valid = false;
   }
 }
 

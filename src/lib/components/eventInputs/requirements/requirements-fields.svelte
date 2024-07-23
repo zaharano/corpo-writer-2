@@ -22,15 +22,16 @@
 
   export let form;
   export let context = "event";
-
+  export let path = ['meta']
+  path = path.concat(['requires'])
   const { form: formData } = form;
 </script>
 
 <div class="space-y-6">
-  <Form.Field {form} name="flags">
+  <Form.Field {form} name={`${path.join('.')}.flags`}>
     <Form.Control let:attrs>
       <Form.Label>Flags required</Form.Label><br>
-      <SetFlags bind:setFlags={$formData.requires.flags} />
+      <SetFlags bind:setFlags={$formData.meta.requires.flags} />
     </Form.Control>
     <Form.Description>
       Any flags that must be set for this {context} to be available.
@@ -38,5 +39,5 @@
     <Form.FormFieldErrors />
   </Form.Field>
 
-  <GameRequirementsForm {form} {context} />
+  <!-- <GameRequirementsForm {form} {context} /> -->
 </div>

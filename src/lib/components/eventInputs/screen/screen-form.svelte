@@ -4,15 +4,13 @@
 
   import { newScreenSchema } from "$lib/types/formSchemas";
   import { optionFormSchema } from "$lib/components/eventInputs/options/option-form.svelte";
+  import { writerMetaSchema } from "$lib/types/eventFormSchema";
 
   export const screenFormSchema = newScreenSchema.innerType().extend({
     id: z.string(),
     text: z.string().min(4).max(600, "Keep screen text below 600 characters."),
     options: z.array(optionFormSchema).min(1, "Screens must have at least one option."),
-    writerMeta: z.object({
-      status: z.enum(["draft", "completed", "validated", "archived"]),
-      notes: z.string().optional(),
-    }),
+    writerMeta: writerMetaSchema,
   })
 
   type ScreenForm = z.infer<typeof screenFormSchema>;
