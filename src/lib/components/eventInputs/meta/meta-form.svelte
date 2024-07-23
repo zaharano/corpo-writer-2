@@ -39,55 +39,20 @@
     dataType: 'json',
     //@ts-ignore - same old thing
 		validators: zodClient(metaFormSchema),
-    // onUpdate: ({ form: f }) => {
-    //   console.log(f.valid);
-    //   if (f.valid) {
-    //     currentEvent.update((ce) => {
-    //       return { ...ce, meta: { ...ce.meta, ...$formData} };
-    //     })
-    //     valid.set(true);
-    //   } else {
-    //     valid.set(false);
-    //   }
-    // }
+    resetForm: false,
+    onUpdate: ({ form: f, cancel }) => {
+      valid.set(f.valid);
+      $currentEvent.writerMeta.valid = f.valid;
+      $currentEvent.writerMeta.errors = {...$currentEvent.writerMeta.errors, meta: f.errors};
+			currentEvent.set({...$currentEvent, meta: f.data});
+      // cancel prevents focus loss, certainly better way to do this
+      cancel();
+    }
 	});
 
 	const { form: formData, enhance, validateForm } = form;
   // immediately validate the loaded data
   validateForm({ update: true});
-
-
-  // replace saveMeta? 
-  // const form = superForm(data, {
-  //   validators: zodClient(formSchema),
-  //   onUpdated: ({ form: f }) => {
-  //     if (f.valid) {
-  //       toast.success(`You submitted ${JSON.stringify(f.data, null, 2)}`);
-  //     } else {
-  //       toast.error("Please fix the errors in the form.");
-  //     }
-  //   }
-  // });
-
-  // TODO: Generalize this to use elsewhere autosave to currentEvent
-  let saveTimer: ReturnType<typeof setTimeout>;
-  function saveMeta() {
-    clearTimeout(saveTimer);
-    tick().then(() => {
-      saveTimer = setTimeout(() => {
-        console.log(metaFormSchema.safeParse($formData));
-        if (metaFormSchema.safeParse($formData).success) {
-          let ce = $currentEvent;
-          ce.meta = { ...ce.meta, ...$formData};
-          currentEvent.set(ce);
-          valid.set(true);
-        } else {
-          valid.set(false);
-        }
-      }, 50);
-    });
-  }
-
 
   // function handleAutoSave(currentEvent: Event, editing: any, schema: any, data: any, timer: ReturnType<typeof setTimeout>) {
   //   clearTimeout(timer);
@@ -115,7 +80,7 @@
     tick().then(() => {
       $formData.priority = aPriority[0]
       $formData.rarity = aRarity[0];
-      saveMeta();
+      // saveMeta();
     });
   }
 
@@ -125,7 +90,7 @@
   let aRarity = [$formData.rarity];
 </script>
 
-<form method="POST" class="mt-8 space-y-8" id="meta-form" use:enhance on:input={saveMeta}>
+<form method="POST" class="mt-8 space-y-8" id="meta-form" use:enhance on:change={form.submit}>
 	<Form.Field {form} name="title">
 		<Form.Control let:attrs>
 			<Form.Label>Title</Form.Label>
@@ -160,7 +125,7 @@
       <Switch 
         {...attrs} 
         bind:checked={$formData.repeatable}
-        on:click={saveMeta}
+        on:click={form.submit}
       />
     </Form.Control>
     <Form.Description>
@@ -175,7 +140,7 @@
       <Switch 
         {...attrs} 
         bind:checked={$formData.random}
-        on:click={saveMeta}
+        on:click={form.submit}
       />
     </Form.Control>
     <Form.Description>
