@@ -1,6 +1,5 @@
 // I think these could be written as extensions of types inferred from zod schemas
 // TODO: refactor to use zod schemas
-
 export type ID = ReturnType<typeof crypto.randomUUID>;
 
 export class Event {
@@ -47,13 +46,14 @@ export class EventMeta {
   }
 }
 
-class WriterMeta {
-  status: Status;
-  notes?: string;
+// how hackey is this? can't figure this out right now
+type NestedRecord<T> = { [key: string]: T | NestedRecord<T> }
 
-  constructor() {
-    this.status = 'draft';
-  }
+class WriterMeta {
+  status: Status = 'draft';
+  notes?: string;
+  valid: boolean = false;
+  errors?: NestedRecord<string[]>;
 }
 
 export const statuses = ['draft', 'completed', 'validated', 'archived'] as const;
@@ -64,18 +64,15 @@ export class Screen {
   readonly id: ID;
   title: string;
   slug: string;
-  text: string;
-  options: Option[];
-  writerMeta: WriterMeta;
+  text: string = '';
+  options: Option[] = [new Option()];
+  writerMeta: WriterMeta = new WriterMeta();
 
   constructor(title: string, slug: string, id?: ID) {
     if (id) this.id = id;
     else this.id = crypto.randomUUID();
     this.slug = slug;
     this.title = title;
-    this.text = '';
-    this.options = [new Option()];
-    this.writerMeta = new WriterMeta();
   }
 }
 
